@@ -19,7 +19,7 @@ Instructions for OpenFlight IARC v3 Case Build
 9. Secure each `monitor_standoff.stl` part to the corners of the `monitor_mount.stl` part with (1x) M2.5 bolt. ![](images/monitor_mount_corners)
 10. Secure the monitor to the `monitor_mount.stl` part. ![](images/monitor_secure.png)
 11. Secure the raspberry Pi to the monitor. ![](images/rasp_secure.png)
-12. Print out the `monitor_shell.stl` part. ![](images/monitor_shell_print.png)
+12. Print out the `monitor_shell.stl` part. If you use the Raspberry Pi Touch Display 2 instead of the 7" HMTECH touchscreen, print `monitor_shell_rpi_touch_v2.stl` instead. ![](images/monitor_shell_print.png)
 13. Secure the monitor assembly inside the `monitor_shell.stl` part with (4x) M2.5 bolts at the corners. ![](images/monitor_shell_assembly.png)
 14. Print out the `monitor_back.stl` part. ![](images/monitor_back.png)
 15. Secure the `monitor_back.stl` part to the `monitor_standoffs.stl` parts with (4x) M2.5 bolts. ![](images/monitor_back_secure.png)

@@ -14,6 +14,8 @@ Hardware components for building the OpenFlight golf launch monitor.
 > **WARNING: Do NOT buy the OPS243-A-W (WiFi version).** The WiFi module locks the serial baud rate to 19200, which is far too slow for I/Q data transfer. OpenFlight requires the standard **OPS243** (USB only) which runs at 57600 baud over CDC-ACM. The WiFi version is not compatible.
 | **7" Touchscreen Display** | HMTECH 7" 1024x600 IPS display | [Amazon](https://www.amazon.com/dp/B0D3QB7X4Z) | $46 |
 
+> **Display alternative:** The [Raspberry Pi Touch Display 2](https://www.raspberrypi.com/products/touch-display-2/) (7" 720x1280, MIPI DSI) also works with the Pi 5. If you use it, print the `monitor_shell_rpi_touch_v2.stl` shell from the IARC case instead of `monitor_shell.stl` — see the [IARC case instructions](../cad/IARC_case/README.md).
+
 ## Sound Trigger (for Rolling Buffer Mode)
 
 The sound trigger detects club impact to precisely time radar captures. Essential for spin detection via rolling buffer mode.
