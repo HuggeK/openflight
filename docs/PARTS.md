@@ -26,7 +26,7 @@ The sound trigger detects club impact to precisely time radar captures. Essentia
 |------|-------------|------|--------|
 | **SparkFun SEN-14262** | Sound Detector with envelope/gate outputs | [SparkFun](https://www.sparkfun.com/products/14262) | $12 |
 | **Through-hole resistor** | For R17 pad on SEN-14262 to reduce sensitivity (see note) | Any electronics supplier | $1 |
-| **Jumper Wires** | 3 wires: GATE → HOST_INT, VCC → 3.3V, GND → GND | Any | $5 |
+| **Jumper wires (female/female, 75 mm)** | 3 wires: GATE → HOST_INT, VCC → 3.3V, GND → GND. Female on both ends — the Pi GPIO header, the OPS243 J3 header, and headers soldered to the SEN-14262 are all male pins. Also covers the OPS243 → Pi ground run. 75 mm is the shortest female/female length Mouser stocks (Adafruit 794, Mouser 485-794, 40-wire strip). $3.95 at Adafruit list; Mouser's price for 485-794 is unverified | [Mouser](https://www.mouser.com/ProductDetail/Adafruit/794) | $4 |
 
 > **R17 resistor:** The SEN-14262 is rated for 5V but runs at 3.3V in this setup, which can cause the GATE output to stick high. Soldering a resistor into the R17 through-hole position (in parallel with the onboard 100kΩ R3) reduces preamp gain and fixes this. Start with 47kΩ; use a lower value (e.g. 33kΩ) if the sensor is still too sensitive for your environment.
 
@@ -54,8 +54,8 @@ angle, and supplies the pre-impact frames club path is derived from.
 | Part | Description | Link | ~Price |
 |------|-------------|------|--------|
 | **TI IWR6843LEVM** | 60 GHz mmWave evaluation board, 4 RX × 3 TX | [TI](https://www.ti.com/tool/IWR6843LEVM) | $150 |
-| **USB cable (data-capable)** | Connects the LEVM's CP2105 serial bridge to the Pi. Charge-only cables will not enumerate — check the connector on your board revision | Any | $5 |
-| **Jumper wire** | 1 wire: detector `GATE` → Pi BCM17 / physical pin 11, alongside the existing `GATE` → OPS `HOST_INT` | Any | $1 |
+| **Micro-USB cable (data-capable)** | Connects the LEVM's CP2105 serial bridge to the Pi — the LEVM's USB port is micro-USB. Charge-only cables will not enumerate | Any | $5 |
+| **Jumper wire** | 1 wire: detector `GATE` → Pi BCM17 / physical pin 11, alongside the existing `GATE` → OPS `HOST_INT`. Female/female again — comes out of the same 75 mm strip as the sound-trigger wires above | [Mouser](https://www.mouser.com/ProductDetail/Adafruit/794) | $1 |
 
 The board needs **custom firmware** — it does not work out of the box. The
 stock TI demo does not expose the raw radar cube OpenFlight needs. A validated
@@ -96,7 +96,10 @@ tilt when the rig is placed on uneven ground.
 | Part | Description | Link | ~Price |
 |------|-------------|------|--------|
 | **Adafruit LIS3DH breakout** | Triple-axis accelerometer with STEMMA QT connectors | [Adafruit product 2809](https://www.adafruit.com/product/2809) | $5 |
-| **JST-SH cable kit** | Solderless STEMMA QT/Qwiic to female Dupont wiring used in the validated build | [Amazon](https://www.amazon.com/Connector-Compatible-Development-Sensors-Drivers/dp/B0GJPRX4YT) | ~$10 |
+| **JST-SH cable kit (Qwiic-to-Dupont)** | Qwiic/STEMMA QT to female Dupont jumpers, used in the validated build. The LIS3DH plugs into its STEMMA QT socket and the Dupont ends push straight onto the Pi GPIO header, so no soldering is needed — the alternative is soldering a header onto the breakout and wiring that by hand | [Amazon](https://www.amazon.com/Connector-Compatible-Development-Sensors-Drivers/dp/B0GJPRX4YT) | ~$10 |
+| **Qwiic-to-Dupont cable (single)** | Mouser-stocked equivalent of the kit above: one JST-SH 4-pin to female Dupont sockets cable (Adafruit 4397, Mouser 485-4397). Enough on its own for the LIS3DH → Pi header run, and it keeps the whole inclinometer orderable from Mouser. 150 mm is the only length Adafruit makes in this JST-SH-to-female-socket configuration; the shorter 50-100 mm Qwiic cables are Qwiic-to-Qwiic and have no Dupont end | [Mouser](https://www.mouser.com/en/ProductDetail/Adafruit/4397) | ~$1 |
+| **STEMMA QT / Qwiic-to-Qwiic cable** | Qwiic-to-Qwiic run for mounting the LIS3DH away from the Pi. Sold in 50-400 mm lengths; which one we need is **TODO** — it depends on the enclosure mounting position, and the case is still in development | [Adafruit](https://www.adafruit.com/product/4399) | ~$1 |
+| **Qwiic-to-male-headers cable** | Adafruit 4209 (Mouser 485-4209), 150 mm: JST-SH 4-pin on the sensor end, male header pins on the other. Those pins chain into the 75 mm female/female strip from the sound-trigger section, so the LIS3DH run can be lengthened from wires already on hand instead of committing to one fixed Qwiic-to-Qwiic length — the practical option while the case layout is unsettled. $0.95 at Adafruit list; Mouser's price for 485-4209 is unverified | [Mouser](https://www.mouser.com/en/ProductDetail/Adafruit/4209) | ~$1 |
 
 See the **[LIS3DH Inclinometer Setup Guide](inclinometer/README.md)** for wiring,
 mounting, calibration, startup flags, and troubleshooting.
@@ -131,6 +134,8 @@ One unit is mounted vertically (launch angle), one horizontally (club path / aim
 | Part | Description | Link | ~Price |
 |------|-------------|------|--------|
 | **27W USB-C Power Supply** | Official Pi 5 power supply (5V 5A) | [Adafruit](https://www.adafruit.com/product/5814) | $14 |
+| **Raspberry Pi Active Cooler** | Clip-on heatsink + fan for the Pi 5 (SC1148). Recommended: the kiosk runs the UI, radar capture, and FFT processing continuously, and a passively cooled Pi 5 throttles under sustained load | [Mouser](https://www.mouser.com/en/ProductDetail/Raspberry-Pi/SC1148) | $8 |
+| **Jumper wires (female/male, 75 mm)** | Header-pin extensions: the female end goes onto a Pi GPIO pin and the male end re-presents that pin for a second connector. Used here to keep the 5V rail reachable for the OPS243 when the Touch Display 2 is also wired to the header, instead of one connector covering the whole rail. 75 mm is the shortest female/male length Mouser stocks (Adafruit 1953, Mouser 485-1953, 20-wire ribbon). $1.95 at Adafruit list; Mouser's price for 485-1953 is unverified | [Mouser](https://www.mouser.com/en/ProductDetail/Adafruit/1953) | $2 |
 | MicroSD Card (32GB+) | For Pi OS and software | Any Class 10 | $10 |
 | USB-A to Micro-USB Cable | For OPS243 radar connection | Any | $5 |
 
@@ -142,6 +147,7 @@ One unit is mounted vertically (launch angle), one horizontally (club path / aim
 | **Geekworm X1202 UPS HAT** | Rechargeable Pi 5 power using four matching flat-top 18650 Li-ion cells. Cells are not included | [Geekworm](https://geekworm.com/products/x1202) | ~$48 + cells |
 | **Geekworm X1206 UPS HAT** | Larger rechargeable Pi 5 power option using four matching 21700 Li-ion cells, advertised up to 20,000mAh total. Cells are not included | [Geekworm](https://geekworm.com/products/x1206) | Varies + cells |
 | **InnoMaker OV9281 global-shutter camera** | High-speed monochrome camera for experimental vision work. Camera software is not enabled in the production kiosk path | [Amazon](https://www.amazon.com/dp/B09WTP5GZH?th=1) | ~$30 |
+| **Adafruit DS3502 digital potentiometer** | I2C-controlled 10K digital potentiometer (STEMMA QT / Qwiic). Intended for the SEN-14262 `R17` gain trim: installed in series with a fixed 37kΩ resistor it gives a software-adjustable 37-47kΩ range, so preamp gain can be tuned from code instead of desoldering and swapping a fixed resistor. **Not yet built or tested** — no code drives it, and [sound-trigger-wiring.md](sound-trigger-wiring.md) still assumes a soldered R17 | [Adafruit](https://www.adafruit.com/product/4286) | ~$5 |
 
 See [Camera and YOLO Experiments](yolo-performance-tuning.md) before buying the
 camera; the standard setup does not install its optional software dependencies.
@@ -153,11 +159,12 @@ camera; the standard setup does not install its optional software dependencies.
 | Category | ~Price |
 |----------|--------|
 | Core (OPS243, Pi 5, Display) | $355 |
-| Sound Trigger (SEN-14262 + resistor + wires) | $18 |
-| Power & Accessories | $27 |
-| **Subtotal, no angle radar** | **~$400** |
+| Sound Trigger (SEN-14262 + resistor + wires) | $17 |
+| Power & Accessories | $37 |
+| **Subtotal, no angle radar** | **~$409** |
 | Angle Radar (IWR6843LEVM + cable + wire) — **current** | $156 |
-| **Total with angle radar** | **~$556** |
+| **Total with angle radar** | **~$565** |
+| Optional Enclosure Inclinometer (LIS3DH + Qwiic cables) | $16 |
 | Angle Radar (2× K-LD7 + FTDI adapters) — **deprecated** | $140 |
 
 OpenFlight works without any angle radar: you get ball speed, club speed, smash
