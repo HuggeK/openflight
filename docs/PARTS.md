@@ -148,7 +148,7 @@ One unit is mounted vertically (launch angle), one horizontally (club path / aim
 | Part | Description | Link | ~Price |
 |------|-------------|------|--------|
 | **Geekworm X1202 UPS HAT** | Rechargeable Pi 5 power using four matching flat-top 18650 Li-ion cells. Cells are not included | [Geekworm](https://geekworm.com/products/x1202) / [Amazon](https://www.amazon.com/dp/B0CRZ4ZXQW) | ~$48 + cells |
-| **Geekworm X1206 UPS HAT** | Larger rechargeable Pi 5 power option using four matching 21700 Li-ion cells, advertised up to 20,000mAh total. Cells are not included | [Geekworm](https://geekworm.com/products/x1206) | Varies + cells |
+| **Geekworm X1206 UPS HAT** | Larger rechargeable Pi 5 power option using four matching flat-top 21700 Li-ion cells (unprotected only, per Geekworm), advertised up to 20,000mAh total. The four 21700 holders are on the board, like the X1202's 18650 holders, so no separate holder is needed; cells are not included. Same XH2.54 power-button header as the X1202, so the button row below fits it too. Its V2.0 DC input is 9-18V at 3A or more (narrower than the X1202's 6-18V), so the 12V examples in the adapter row apply; USB-C input is 5V 5A. No Amazon listing was found, so it is a Geekworm-direct order today | [Geekworm](https://geekworm.com/products/x1206) | $52 + cells |
 | **X1202 power button: Adafruit 16 mm momentary button (1445) + XH quick-connect leads (1152)** | The X1202/X1206 expose their external power button on an XH2.54 2-pin header and need a momentary (spring-back) switch: the board reads press length the way the Pi 5 power button does, so a latching or toggle switch will not work. The 1445 is a 16 mm panel-mount momentary push button (normally open, two 0.11" tabs). The 1152 pack holds ten 20 cm wire pairs, each ending in a 2-pin JST XH plug for the header and two pre-crimped 0.11" quick-connects that push onto the button's tabs, so nothing is soldered or crimped; Adafruit's 1445 page names the 1152 pairs as its wiring. Needs a 16 mm panel hole. Adafruit showed the 1152 out of stock when checked and its Amazon listing (B00SK6M36U) as unavailable; Mouser's stock is unverified | [Mouser (1445)](https://www.mouser.com/ProductDetail/Adafruit/1445) / [Mouser (1152)](https://www.mouser.com/ProductDetail/Adafruit/1152) / [Adafruit](https://www.adafruit.com/product/1445) | ~$6 |
 | **DC adapter for the X1202 (5.5 × 2.1 mm barrel, center positive, 6-18V, 3A or more)** | Feeds the X1202 through its barrel jack instead of USB-C, which is the better input for a cased build: no USB PD negotiation to fail and no USB-C extension to sag. The X1202 accepts 6-18V DC on that jack and converts it to the 5.1V 5A the Pi 5 needs while also charging the cells. Geekworm's stated requirement is a current, not a wattage: "6-18Vdc, ≥3A", with charging at up to 3.2A into the cells; it publishes no watt figure. Where the power goes: the Pi 5 can draw up to 25.5W (5.1V × 5A) with both radars on its USB budget, and charging adds up to about 12W when the cells are low, plus converter losses. So the same 3A buys different things at different voltages: at 12V (36W) it runs the Pi at full load and charges at the same time, which is why Geekworm's own adapters are 12V; at 9V (27W) it runs the Pi but charging slows under load; at 6V (18W) it cannot carry a full Pi load and the cells drain while plugged in. **Check the amps against the voltage** rather than treating "6-18V" as "any adapter": a little over 25W is enough to run the Pi, not to run it and charge at full rate, and 12-18V at 3A or more covers both. Examples: MEAN WELL GST36 (12V 3A; GST36U12-P1J US plug, GST36E12-P1J EU plug, both at Mouser) or Geekworm's own PSU60 (12V 5A, also sold as an Amazon bundle with the X1202). Never connect the DC jack and the USB-C input at the same time | [Mouser (EU plug)](https://www.mouser.com/en/ProductDetail/MEAN-WELL/GST36E12-P1J) / [Mouser (US plug)](https://www.mouser.com/c/?q=GST36U12-P1J) / [Amazon (PSU60)](https://www.amazon.com/dp/B0BDF89DCB) | ~$15 |
 | **InnoMaker OV9281 global-shutter camera** | High-speed monochrome camera for experimental vision work. Camera software is not enabled in the production kiosk path | [Amazon](https://www.amazon.com/dp/B09WTP5GZH?th=1) | ~$30 |
@@ -173,6 +173,8 @@ camera; the standard setup does not install its optional software dependencies.
 | Optional Enclosure Inclinometer (LIS3DH + Qwiic-to-Dupont cable) | $15 |
 | Optional extras (X1202 UPS HAT, four 18650 cells, 16 mm power button + leads, OV9281 camera) | $108 |
 | **Complete build (total with angle radar + inclinometer + optional extras)** | **~$687** |
+| Optional extras with the X1206 instead (X1206 UPS HAT, four 21700 cells, 16 mm power button + leads, OV9281 camera) | $120 |
+| **Complete build with the X1206 instead** | **~$699** |
 | Angle Radar (2× K-LD7 + FTDI adapters) — **deprecated** | $140 |
 
 The complete-build line uses the X1202 as the UPS (not the X1206), estimates its
@@ -180,6 +182,13 @@ four flat-top 18650 cells at ~$6 each ($24; a Samsung 35E, Molicel P28A, or LG
 MJ1 each sells for about that), and leaves out the deprecated K-LD7 path, the
 untested DS3502 and its Qwiic-to-Qwiic link, and the 12V DC adapter, which
 replaces the 27W USB-C supply already counted rather than adding to it.
+
+With the X1206 instead, the extras are $52 for the HAT (Geekworm list price)
++ four flat-top 21700 cells at ~$8 each ($32; a Samsung 50E or Molicel P42A
+sells for $6-9) + the same $6 button pair + the $30 camera = $120, and the
+complete build comes to ~$699. Nothing else changes: the X1206 V2.0 carries its
+four 21700 holders on the board, uses the same power-button header, and takes
+the same 12V adapter, since its 9-18V input sits inside the X1202's range.
 
 If the [PR #221](https://github.com/open-flight/openflight/pull/221) internal
 trigger lands and your OPS243 firmware can be updated, the Sound Trigger line
