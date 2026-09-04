@@ -28,7 +28,7 @@ The sound trigger detects club impact to precisely time radar captures. Essentia
 |------|-------------|------|--------|
 | **SparkFun SEN-14262** | Sound Detector with envelope/gate outputs | [SparkFun](https://www.sparkfun.com/products/14262) | $12 |
 | **Through-hole resistor** | For R17 pad on SEN-14262 to reduce sensitivity (see note) | Any electronics supplier | $1 |
-| **Jumper wires (female/female, 75 mm)** | 3 wires: GATE → HOST_INT, VCC → 3.3V, GND → GND. Female on both ends — the Pi GPIO header, the OPS243 J3 header, and headers soldered to the SEN-14262 are all male pins. Also covers the OPS243 → Pi ground run. 75 mm is the shortest female/female length Mouser stocks (Adafruit 794, Mouser 485-794, 40-wire strip). $3.95 at Adafruit list; Mouser's price for 485-794 is unverified | [Mouser](https://www.mouser.com/ProductDetail/Adafruit/794) | $4 |
+| **Jumper wires (female/female, 150 mm)** | 3 wires: GATE → HOST_INT, VCC → 3.3V, GND → GND. Female on both ends — the Pi GPIO header, the OPS243 J3 header, and headers soldered to the SEN-14262 are all male pins. Also covers the OPS243 → Pi ground run. SparkFun PRT-12796 (Mouser 474-PRT-12796): 20-wire connected ribbon, 6 in / 150 mm, peel off what you need. $2.75 at SparkFun list; Mouser's price is unverified. Adafruit's 75 mm strip (794) cannot be found at Mouser, which is why this row is the 150 mm pack | [Mouser](https://www.mouser.com/ProductDetail/SparkFun/PRT-12796) | $3 |
 
 > **R17 resistor:** The SEN-14262 is rated for 5V but runs at 3.3V in this setup, which can cause the GATE output to stick high. Soldering a resistor into the R17 through-hole position (in parallel with the onboard 100kΩ R3) reduces preamp gain and fixes this. Start with 47kΩ; use a lower value (e.g. 33kΩ) if the sensor is still too sensitive for your environment.
 
@@ -57,7 +57,7 @@ angle, and supplies the pre-impact frames club path is derived from.
 |------|-------------|------|--------|
 | **TI IWR6843LEVM** | 60 GHz mmWave evaluation board, 4 RX × 3 TX | [TI](https://www.ti.com/tool/IWR6843LEVM) | $150 |
 | **Micro-USB cable (data-capable)** | Connects the LEVM's CP2105 serial bridge to the Pi — the LEVM's USB port is micro-USB. Charge-only cables will not enumerate | Any | $5 |
-| **Jumper wire** | 1 wire: detector `GATE` → Pi BCM17 / physical pin 11, alongside the existing `GATE` → OPS `HOST_INT`. Female/female again — comes out of the same 75 mm strip as the sound-trigger wires above | [Mouser](https://www.mouser.com/ProductDetail/Adafruit/794) | $1 |
+| **Jumper wire** | 1 wire: detector `GATE` → Pi BCM17 / physical pin 11, alongside the existing `GATE` → OPS `HOST_INT`. Female/female again — comes out of the same 150 mm SparkFun PRT-12796 pack as the sound-trigger wires above | [Mouser](https://www.mouser.com/ProductDetail/SparkFun/PRT-12796) | $1 |
 
 The board needs **custom firmware** — it does not work out of the box. The
 stock TI demo does not expose the raw radar cube OpenFlight needs. A validated
@@ -165,14 +165,14 @@ camera; the standard setup does not install its optional software dependencies.
 | Category | ~Price |
 |----------|--------|
 | Core (OPS243, Pi 5, Display) | $355 |
-| Sound Trigger (SEN-14262 + resistor + wires) | $17 |
+| Sound Trigger (SEN-14262 + resistor + wires) | $16 |
 | Power & Accessories | $37 |
-| **Subtotal, no angle radar** | **~$409** |
+| **Subtotal, no angle radar** | **~$408** |
 | Angle Radar (IWR6843LEVM + cable + wire) — **current** | $156 |
-| **Total with angle radar** | **~$565** |
+| **Total with angle radar** | **~$564** |
 | Optional Enclosure Inclinometer (LIS3DH + Qwiic cables) | $16 |
 | Optional extras (X1202 UPS HAT, four 18650 cells, 12 mm power button, OV9281 camera) | $104 |
-| **Complete build (total with angle radar + inclinometer + optional extras)** | **~$685** |
+| **Complete build (total with angle radar + inclinometer + optional extras)** | **~$684** |
 | Angle Radar (2× K-LD7 + FTDI adapters) — **deprecated** | $140 |
 
 The complete-build line uses the X1202 as the UPS (not the X1206), estimates its
@@ -183,7 +183,7 @@ already counted rather than adding to it.
 
 If the [PR #221](https://github.com/open-flight/openflight/pull/221) internal
 trigger lands and your OPS243 firmware can be updated, the Sound Trigger line
-($17) becomes optional and drops out of every total above.
+($16) becomes optional and drops out of every total above.
 
 OpenFlight works without any angle radar: you get ball speed, club speed, smash
 factor, spin rate, and estimated carry. The angle radar adds measured launch
