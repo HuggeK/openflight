@@ -22,6 +22,8 @@ Hardware components for building the OpenFlight golf launch monitor.
 
 The sound trigger detects club impact to precisely time radar captures. Essential for spin detection via rolling buffer mode.
 
+> **Optional path, not merged yet:** [PR #221](https://github.com/open-flight/openflight/pull/221) adds an opt-in `--trigger hardware` mode in which the OPS243 fires the rolling-buffer dump from its own internal speed trigger, with no SEN-14262 in the loop. It requires OPS243-A firmware v1.3.1. If it lands and your OPS243 can be updated to that firmware, the parts in this section become optional. Until then the sound trigger is the supported trigger and stays in the totals.
+
 | Part | Description | Link | ~Price |
 |------|-------------|------|--------|
 | **SparkFun SEN-14262** | Sound Detector with envelope/gate outputs | [SparkFun](https://www.sparkfun.com/products/14262) | $12 |
@@ -97,7 +99,7 @@ tilt when the rig is placed on uneven ground.
 |------|-------------|------|--------|
 | **Adafruit LIS3DH breakout** | Triple-axis accelerometer with STEMMA QT connectors | [Adafruit product 2809](https://www.adafruit.com/product/2809) | $5 |
 | **JST-SH cable kit (Qwiic-to-Dupont)** | Qwiic/STEMMA QT to female Dupont jumpers, used in the validated build. The LIS3DH plugs into its STEMMA QT socket and the Dupont ends push straight onto the Pi GPIO header, so no soldering is needed — the alternative is soldering a header onto the breakout and wiring that by hand | [Amazon](https://www.amazon.com/Connector-Compatible-Development-Sensors-Drivers/dp/B0GJPRX4YT) | ~$10 |
-| **Qwiic-to-Dupont cable (single)** | Mouser-stocked equivalent of the kit above: one JST-SH 4-pin to female Dupont sockets cable (Adafruit 4397, Mouser 485-4397). Enough on its own for the LIS3DH → Pi header run, and it keeps the whole inclinometer orderable from Mouser. 150 mm is the only length Adafruit makes in this JST-SH-to-female-socket configuration; the shorter 50-100 mm Qwiic cables are Qwiic-to-Qwiic and have no Dupont end | [Mouser](https://www.mouser.com/en/ProductDetail/Adafruit/4397) | ~$1 |
+| **Qwiic-to-Dupont cable (single)** | Mouser-stocked equivalent of the kit above: one JST-SH 4-pin to female Dupont sockets cable (Adafruit 4397, Mouser 485-4397). Enough on its own for the LIS3DH → Pi header run, and it keeps the whole inclinometer orderable from Mouser. 150 mm is the only length Adafruit makes in this JST-SH-to-female-socket configuration; the shorter 50-100 mm Qwiic cables are Qwiic-to-Qwiic and have no Dupont end. The chain does not have to stop at the LIS3DH: its second STEMMA QT socket can carry a Qwiic-to-Qwiic cable further down to the DS3502 digital potentiometer in the Optional table (sound-trigger gain research), so one Pi-to-header cable serves both boards | [Mouser](https://www.mouser.com/en/ProductDetail/Adafruit/4397) | ~$1 |
 | **STEMMA QT / Qwiic-to-Qwiic cable** | Qwiic-to-Qwiic run for mounting the LIS3DH away from the Pi. Sold in 50-400 mm lengths; which one we need is **TODO** — it depends on the enclosure mounting position, and the case is still in development | [Adafruit](https://www.adafruit.com/product/4399) | ~$1 |
 
 See the **[LIS3DH Inclinometer Setup Guide](inclinometer/README.md)** for wiring,
@@ -147,7 +149,7 @@ One unit is mounted vertically (launch angle), one horizontally (club path / aim
 | **Geekworm 12 mm power button (PSW12)** | Geekworm's pre-wired momentary metal push button for its UPS boards: 12 mm panel hole, IP66, 15 cm lead ending in the XH2.54 2-pin plug that fits the external power-button header on the X1202/X1206, so no soldering or crimping. Geekworm lists it for the X1201/X1202/X1203/X1206. Not found on Amazon or Mouser, so order it from Geekworm, together with the HAT if buying that from Geekworm too | [Geekworm](https://geekworm.com/products/psw12) | $2 |
 | **12V DC adapter (5.5 × 2.1 mm barrel, 3A or more)** | Feeds the X1202 through its barrel jack instead of USB-C. The X1202 accepts 6-18V DC on that jack and converts it to the 5.1V 5A the Pi 5 needs; at 12V a 3A (36W) adapter covers that, so any 12V, 3A-or-more, center-positive 5.5 × 2.1 mm adapter will do. Examples: MEAN WELL GST36 (12V 3A; GST36U12-P1J US plug, GST36E12-P1J EU plug, both at Mouser) or Geekworm's own PSU60 (12V 5A, also sold as an Amazon bundle with the X1202). Never connect the DC jack and the USB-C input at the same time | [Mouser (EU plug)](https://www.mouser.com/en/ProductDetail/MEAN-WELL/GST36E12-P1J) / [Mouser (US plug)](https://www.mouser.com/c/?q=GST36U12-P1J) / [Amazon (PSU60)](https://www.amazon.com/dp/B0BDF89DCB) | ~$15 |
 | **InnoMaker OV9281 global-shutter camera** | High-speed monochrome camera for experimental vision work. Camera software is not enabled in the production kiosk path | [Amazon](https://www.amazon.com/dp/B09WTP5GZH?th=1) | ~$30 |
-| **Adafruit DS3502 digital potentiometer** | I2C-controlled 10K digital potentiometer (STEMMA QT / Qwiic). Intended for the SEN-14262 `R17` gain trim: installed in series with a fixed 37kΩ resistor it gives a software-adjustable 37-47kΩ range, so preamp gain can be tuned from code instead of desoldering and swapping a fixed resistor. **Not yet built or tested** — no code drives it, and [sound-trigger-wiring.md](sound-trigger-wiring.md) still assumes a soldered R17 | [Adafruit](https://www.adafruit.com/product/4286) | ~$5 |
+| **Adafruit DS3502 digital potentiometer** | I2C-controlled 10K digital potentiometer (STEMMA QT / Qwiic). Intended for the SEN-14262 `R17` gain trim: installed in series with a fixed 37kΩ resistor it gives a software-adjustable 37-47kΩ range, so preamp gain can be tuned from code instead of desoldering and swapping a fixed resistor. **Not yet built or tested** — no code drives it, and [sound-trigger-wiring.md](sound-trigger-wiring.md) still assumes a soldered R17. Wiring plan: further down the same Qwiic chain as the inclinometer (Pi → Qwiic-to-Dupont → LIS3DH → Qwiic-to-Qwiic → DS3502), so it takes no extra Pi header pins. Research item for the sound-trigger path only; moot if the [PR #221](https://github.com/open-flight/openflight/pull/221) internal trigger replaces the sound trigger | [Adafruit](https://www.adafruit.com/product/4286) | ~$5 |
 
 See [Camera and YOLO Experiments](yolo-performance-tuning.md) before buying the
 camera; the standard setup does not install its optional software dependencies.
@@ -174,6 +176,10 @@ four flat-top 18650 cells at ~$6 each ($24; a Samsung 35E, Molicel P28A, or LG
 MJ1 each sells for about that), and leaves out the deprecated K-LD7 path, the
 untested DS3502, and the 12V DC adapter, which replaces the 27W USB-C supply
 already counted rather than adding to it.
+
+If the [PR #221](https://github.com/open-flight/openflight/pull/221) internal
+trigger lands and your OPS243 firmware can be updated, the Sound Trigger line
+($17) becomes optional and drops out of every total above.
 
 OpenFlight works without any angle radar: you get ball speed, club speed, smash
 factor, spin rate, and estimated carry. The angle radar adds measured launch
