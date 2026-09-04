@@ -142,6 +142,8 @@ One unit is mounted vertically (launch angle), one horizontally (club path / aim
 
 > **Cheaper and simpler with the UPS HAT:** if you fit the Geekworm X1202/X1206 from the Optional table, skip the 27W USB-C supply. Any barrel-jack supply that gives the UPS enough power feeds it (12V at 3A or more for the X1202), and the UPS delivers 5.1V 5A to the Pi over its pogo pins; the Geekworm setup script sets `PSU_MAX_CURRENT=5000` so the Pi treats it as a 5A supply and keeps the full USB budget. For a device that lives in a case, the DC barrel jack is the better input either way: there is no USB PD negotiation to fail and no USB-C extension to sag, and a 12V adapter you already own will do.
 
+> **UPS safety, read before the first charge:** **Never charge the 18650 cells below 0 °C (32 °F).** Lithium-ion cells charged below freezing plate lithium onto the anode, which permanently damages them and can make them unsafe; bring a cold rig indoors or let it warm up before connecting power. **Never connect the UPS's USB-C input and its barrel jack at the same time.** If you do power the UPS from the USB-C supply, plug it into the **UPS board's** USB-C socket, never into the Pi's own USB-C port while the Pi sits on the UPS. Details in the [Geekworm operator guide](battery/geekworm.md).
+
 ## Optional
 
 | Part | Description | Link | ~Price |
