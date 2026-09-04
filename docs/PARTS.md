@@ -146,6 +146,7 @@ One unit is mounted vertically (launch angle), one horizontally (club path / aim
 | **Geekworm X1202 UPS HAT** | Rechargeable Pi 5 power using four matching flat-top 18650 Li-ion cells. Cells are not included | [Geekworm](https://geekworm.com/products/x1202) / [Amazon](https://www.amazon.com/dp/B0CRZ4ZXQW) | ~$48 + cells |
 | **Geekworm X1206 UPS HAT** | Larger rechargeable Pi 5 power option using four matching 21700 Li-ion cells, advertised up to 20,000mAh total. Cells are not included | [Geekworm](https://geekworm.com/products/x1206) | Varies + cells |
 | **Geekworm 12 mm power button (PSW12)** | Geekworm's pre-wired momentary metal push button for its UPS boards: 12 mm panel hole, IP66, 15 cm lead ending in the XH2.54 2-pin plug that fits the external power-button header on the X1202/X1206, so no soldering or crimping. Geekworm lists it for the X1201/X1202/X1203/X1206. Not found on Amazon or Mouser, so order it from Geekworm, together with the HAT if buying that from Geekworm too | [Geekworm](https://geekworm.com/products/psw12) | $2 |
+| **Geekworm 12V 5A DC adapter (PSU60)** | Feeds the X1202 through its 5.5 × 2.1 mm barrel jack instead of USB-C. The X1202 accepts 6-18V DC at ≥3A on that jack and converts it to the 5.1V 5A the Pi 5 needs, so any 12V adapter rated 3A or more will do; this is Geekworm's own 12V 5A 60W supply, also sold as an Amazon bundle with the X1202. Never connect the DC jack and the USB-C input at the same time | [Amazon](https://www.amazon.com/dp/B0BDF89DCB) / [Geekworm](https://geekworm.com/products/psu60) | ~$17 |
 | **InnoMaker OV9281 global-shutter camera** | High-speed monochrome camera for experimental vision work. Camera software is not enabled in the production kiosk path | [Amazon](https://www.amazon.com/dp/B09WTP5GZH?th=1) | ~$30 |
 | **Adafruit DS3502 digital potentiometer** | I2C-controlled 10K digital potentiometer (STEMMA QT / Qwiic). Intended for the SEN-14262 `R17` gain trim: installed in series with a fixed 37kΩ resistor it gives a software-adjustable 37-47kΩ range, so preamp gain can be tuned from code instead of desoldering and swapping a fixed resistor. **Not yet built or tested** — no code drives it, and [sound-trigger-wiring.md](sound-trigger-wiring.md) still assumes a soldered R17 | [Adafruit](https://www.adafruit.com/product/4286) | ~$5 |
 
@@ -171,8 +172,9 @@ camera; the standard setup does not install its optional software dependencies.
 
 The complete-build line uses the X1202 as the UPS (not the X1206), estimates its
 four flat-top 18650 cells at ~$6 each ($24; a Samsung 35E, Molicel P28A, or LG
-MJ1 each sells for about that), and leaves out the deprecated K-LD7 path and the
-untested DS3502.
+MJ1 each sells for about that), and leaves out the deprecated K-LD7 path, the
+untested DS3502, and the 12V DC adapter, which replaces the 27W USB-C supply
+already counted rather than adding to it.
 
 OpenFlight works without any angle radar: you get ball speed, club speed, smash
 factor, spin rate, and estimated carry. The angle radar adds measured launch
