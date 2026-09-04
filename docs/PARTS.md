@@ -100,7 +100,6 @@ tilt when the rig is placed on uneven ground.
 | **Adafruit LIS3DH breakout** | Triple-axis accelerometer with STEMMA QT connectors | [Adafruit product 2809](https://www.adafruit.com/product/2809) | $5 |
 | **JST-SH cable kit (Qwiic-to-Dupont)** | Qwiic/STEMMA QT to female Dupont jumpers, used in the validated build. The LIS3DH plugs into its STEMMA QT socket and the Dupont ends push straight onto the Pi GPIO header, so no soldering is needed — the alternative is soldering a header onto the breakout and wiring that by hand | [Amazon](https://www.amazon.com/Connector-Compatible-Development-Sensors-Drivers/dp/B0GJPRX4YT) | ~$10 |
 | **Qwiic-to-Dupont cable (single)** | Mouser-stocked equivalent of the kit above: one JST-SH 4-pin to female Dupont sockets cable (Adafruit 4397, Mouser 485-4397). Enough on its own for the LIS3DH → Pi header run, and it keeps the whole inclinometer orderable from Mouser. 150 mm is the only length Adafruit makes in this JST-SH-to-female-socket configuration; the shorter 50-100 mm Qwiic cables are Qwiic-to-Qwiic and have no Dupont end. The chain does not have to stop at the LIS3DH: its second STEMMA QT socket can carry a Qwiic-to-Qwiic cable further down to the DS3502 digital potentiometer in the Optional table (sound-trigger gain research), so one Pi-to-header cable serves both boards | [Mouser](https://www.mouser.com/en/ProductDetail/Adafruit/4397) | ~$1 |
-| **STEMMA QT / Qwiic-to-Qwiic cable** | Qwiic-to-Qwiic run for mounting the LIS3DH away from the Pi. Sold in 50-400 mm lengths; which one we need is **TODO** — it depends on the enclosure mounting position, and the case is still in development | [Adafruit](https://www.adafruit.com/product/4399) | ~$1 |
 
 See the **[LIS3DH Inclinometer Setup Guide](inclinometer/README.md)** for wiring,
 mounting, calibration, startup flags, and troubleshooting.
@@ -154,6 +153,7 @@ One unit is mounted vertically (launch angle), one horizontally (club path / aim
 | **12V DC adapter (5.5 × 2.1 mm barrel, 3A or more)** | Feeds the X1202 through its barrel jack instead of USB-C, which is the better input for a cased build: no USB PD negotiation to fail and no USB-C extension to sag. The X1202 accepts 6-18V DC on that jack and converts it to the 5.1V 5A the Pi 5 needs; at 12V a 3A (36W) adapter covers that, so any 12V, 3A-or-more, center-positive 5.5 × 2.1 mm adapter will do. Examples: MEAN WELL GST36 (12V 3A; GST36U12-P1J US plug, GST36E12-P1J EU plug, both at Mouser) or Geekworm's own PSU60 (12V 5A, also sold as an Amazon bundle with the X1202). Never connect the DC jack and the USB-C input at the same time | [Mouser (EU plug)](https://www.mouser.com/en/ProductDetail/MEAN-WELL/GST36E12-P1J) / [Mouser (US plug)](https://www.mouser.com/c/?q=GST36U12-P1J) / [Amazon (PSU60)](https://www.amazon.com/dp/B0BDF89DCB) | ~$15 |
 | **InnoMaker OV9281 global-shutter camera** | High-speed monochrome camera for experimental vision work. Camera software is not enabled in the production kiosk path | [Amazon](https://www.amazon.com/dp/B09WTP5GZH?th=1) | ~$30 |
 | **Adafruit DS3502 digital potentiometer** | I2C-controlled 10K digital potentiometer (STEMMA QT / Qwiic). Intended for the SEN-14262 `R17` gain trim: installed in series with a fixed 37kΩ resistor it gives a software-adjustable 37-47kΩ range, so preamp gain can be tuned from code instead of desoldering and swapping a fixed resistor. **Not yet built or tested** — no code drives it, and [sound-trigger-wiring.md](sound-trigger-wiring.md) still assumes a soldered R17. Wiring plan: further down the same Qwiic chain as the inclinometer (Pi → Qwiic-to-Dupont → LIS3DH → Qwiic-to-Qwiic → DS3502), so it takes no extra Pi header pins. Research item for the sound-trigger path only; moot if the [PR #221](https://github.com/open-flight/openflight/pull/221) internal trigger replaces the sound trigger | [Adafruit](https://www.adafruit.com/product/4286) | ~$5 |
+| **STEMMA QT / Qwiic-to-Qwiic cable (for the DS3502)** | The link from the LIS3DH's second STEMMA QT socket down to the DS3502, so the digital potentiometer joins the same I2C chain without taking any Pi header pins. Only needed if the DS3502 is fitted. Sold in 50-400 mm lengths; which one is **TODO** — it depends on where the DS3502 sits relative to the LIS3DH, and the case is still in development | [Adafruit](https://www.adafruit.com/product/4399) | ~$1 |
 
 See [Camera and YOLO Experiments](yolo-performance-tuning.md) before buying the
 camera; the standard setup does not install its optional software dependencies.
@@ -170,16 +170,16 @@ camera; the standard setup does not install its optional software dependencies.
 | **Subtotal, no angle radar** | **~$408** |
 | Angle Radar (IWR6843LEVM + cable + wire) — **current** | $156 |
 | **Total with angle radar** | **~$564** |
-| Optional Enclosure Inclinometer (LIS3DH + Qwiic cables) | $16 |
+| Optional Enclosure Inclinometer (LIS3DH + Qwiic-to-Dupont cable) | $15 |
 | Optional extras (X1202 UPS HAT, four 18650 cells, 16 mm power button + leads, OV9281 camera) | $108 |
-| **Complete build (total with angle radar + inclinometer + optional extras)** | **~$688** |
+| **Complete build (total with angle radar + inclinometer + optional extras)** | **~$687** |
 | Angle Radar (2× K-LD7 + FTDI adapters) — **deprecated** | $140 |
 
 The complete-build line uses the X1202 as the UPS (not the X1206), estimates its
 four flat-top 18650 cells at ~$6 each ($24; a Samsung 35E, Molicel P28A, or LG
 MJ1 each sells for about that), and leaves out the deprecated K-LD7 path, the
-untested DS3502, and the 12V DC adapter, which replaces the 27W USB-C supply
-already counted rather than adding to it.
+untested DS3502 and its Qwiic-to-Qwiic link, and the 12V DC adapter, which
+replaces the 27W USB-C supply already counted rather than adding to it.
 
 If the [PR #221](https://github.com/open-flight/openflight/pull/221) internal
 trigger lands and your OPS243 firmware can be updated, the Sound Trigger line
