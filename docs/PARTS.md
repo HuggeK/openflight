@@ -143,10 +143,9 @@ One unit is mounted vertically (launch angle), one horizontally (club path / aim
 
 | Part | Description | Link | ~Price |
 |------|-------------|------|--------|
-| Tripod Mount | For positioning the unit | 1/4"-20 mount | $10 |
 | **Geekworm X1202 UPS HAT** | Rechargeable Pi 5 power using four matching flat-top 18650 Li-ion cells. Cells are not included | [Geekworm](https://geekworm.com/products/x1202) / [Amazon](https://www.amazon.com/dp/B0CRZ4ZXQW) | ~$48 + cells |
 | **Geekworm X1206 UPS HAT** | Larger rechargeable Pi 5 power option using four matching 21700 Li-ion cells, advertised up to 20,000mAh total. Cells are not included | [Geekworm](https://geekworm.com/products/x1206) | Varies + cells |
-| **Geekworm PSW12 power button** | Pre-wired 12 mm momentary metal push button (IP66) with a 15 cm lead ending in the XH2.54 2-pin plug that fits the external power-button header on the X1202/X1206, so no soldering or crimping. Geekworm lists it for the X1201/X1202/X1203/X1206. Not found on Amazon or Mouser, so order it from Geekworm, together with the HAT if buying that from Geekworm too | [Geekworm](https://geekworm.com/products/psw12) | $2 |
+| **Geekworm 12 mm power button (PSW12)** | Geekworm's pre-wired momentary metal push button for its UPS boards: 12 mm panel hole, IP66, 15 cm lead ending in the XH2.54 2-pin plug that fits the external power-button header on the X1202/X1206, so no soldering or crimping. Geekworm lists it for the X1201/X1202/X1203/X1206. Not found on Amazon or Mouser, so order it from Geekworm, together with the HAT if buying that from Geekworm too | [Geekworm](https://geekworm.com/products/psw12) | $2 |
 | **InnoMaker OV9281 global-shutter camera** | High-speed monochrome camera for experimental vision work. Camera software is not enabled in the production kiosk path | [Amazon](https://www.amazon.com/dp/B09WTP5GZH?th=1) | ~$30 |
 | **Adafruit DS3502 digital potentiometer** | I2C-controlled 10K digital potentiometer (STEMMA QT / Qwiic). Intended for the SEN-14262 `R17` gain trim: installed in series with a fixed 37kΩ resistor it gives a software-adjustable 37-47kΩ range, so preamp gain can be tuned from code instead of desoldering and swapping a fixed resistor. **Not yet built or tested** — no code drives it, and [sound-trigger-wiring.md](sound-trigger-wiring.md) still assumes a soldered R17 | [Adafruit](https://www.adafruit.com/product/4286) | ~$5 |
 
@@ -166,8 +165,8 @@ camera; the standard setup does not install its optional software dependencies.
 | Angle Radar (IWR6843LEVM + cable + wire) — **current** | $156 |
 | **Total with angle radar** | **~$565** |
 | Optional Enclosure Inclinometer (LIS3DH + Qwiic cables) | $16 |
-| Optional extras (tripod mount, X1202 UPS HAT, four 18650 cells, PSW12 button, OV9281 camera) | $114 |
-| **Complete build (total with angle radar + inclinometer + optional extras)** | **~$695** |
+| Optional extras (X1202 UPS HAT, four 18650 cells, 12 mm power button, OV9281 camera) | $104 |
+| **Complete build (total with angle radar + inclinometer + optional extras)** | **~$685** |
 | Angle Radar (2× K-LD7 + FTDI adapters) — **deprecated** | $140 |
 
 The complete-build line uses the X1202 as the UPS (not the X1206), estimates its
