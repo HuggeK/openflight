@@ -28,7 +28,7 @@ The sound trigger detects club impact to precisely time radar captures. Essentia
 |------|-------------|------|--------|
 | **SparkFun SEN-14262** | Sound Detector with envelope/gate outputs | [SparkFun](https://www.sparkfun.com/products/14262) | $12 |
 | **Through-hole resistor** | For R17 pad on SEN-14262 to reduce sensitivity (see note) | Any electronics supplier | $1 |
-| **Jumper wires (female/female, 150 mm)** | 3 wires: GATE → HOST_INT, VCC → 3.3V, GND → GND. Female on both ends — the Pi GPIO header, the OPS243 J3 header, and headers soldered to the SEN-14262 are all male pins. Also covers the OPS243 → Pi ground run. SparkFun PRT-12796 (Mouser 474-PRT-12796): 20-wire connected ribbon, 6 in / 150 mm, peel off what you need. $2.75 at SparkFun list; Mouser's price is unverified. Adafruit's 75 mm strip (794) cannot be found at Mouser, which is why this row is the 150 mm pack | [Mouser](https://www.mouser.com/ProductDetail/SparkFun/PRT-12796) | $3 |
+| **Jumper wires (female/female, 300 mm)** | 8 wires out of one pack: `GATE` → `HOST_INT`, `VCC` → 3.3V and `GND` → `GND` from the sound detector, the OPS243 → Pi ground run, the OPS243 `TxD`/`RxD`/5V wires of Layout A, and the `GATE` → Pi BCM17 wire the angle radar needs. Female on both ends — the Pi GPIO header, the OPS243 J3 header, and headers soldered to the SEN-14262 are all male pins. 300 mm, not 150, because the sound detector sits on the back of the screen in the front half of the v2 enclosure while the OPS243 hangs from the bottom-right standoffs of the back half: that `GATE` → `HOST_INT` run is ~130 mm in a straight line, ~175 mm as routed, and longer still when the front half is lifted off for service, so a 150 mm wire does not reach (see [Cable lengths](#cable-lengths-enclosure-v2)). SparkFun PRT-09389: 10 wires, 12 in / 305 mm, $4.95 at SparkFun list; Mouser's listing (474-PRT-09389) is unverified. The 150 mm PRT-12796 pack covers only the OPS243 ↔ Pi runs, which are ~50 mm | [Mouser](https://www.mouser.com/c/?q=PRT-09389) / [SparkFun](https://www.sparkfun.com/jumper-wires-premium-12-f-f-pack-of-10.html) | $5 |
 
 > **R17 resistor:** The SEN-14262 is rated for 5V but runs at 3.3V in this setup, which can cause the GATE output to stick high. Soldering a resistor into the R17 through-hole position (in parallel with the onboard 100kΩ R3) reduces preamp gain and fixes this. Start with 47kΩ; use a lower value (e.g. 33kΩ) if the sensor is still too sensitive for your environment.
 
@@ -56,8 +56,8 @@ angle, and supplies the pre-impact frames club path is derived from.
 | Part | Description | Link | ~Price |
 |------|-------------|------|--------|
 | **TI IWR6843LEVM** | 60 GHz mmWave evaluation board, 4 RX × 3 TX | [TI](https://www.ti.com/tool/IWR6843LEVM) | $150 |
-| **Micro-USB cable (data-capable)** | Connects the LEVM's CP2105 serial bridge to the Pi — the LEVM's USB port is micro-USB. Charge-only cables will not enumerate | Any | $5 |
-| **Jumper wire** | 1 wire: detector `GATE` → Pi BCM17 / physical pin 11, alongside the existing `GATE` → OPS `HOST_INT`. Female/female again — comes out of the same 150 mm SparkFun PRT-12796 pack as the sound-trigger wires above | [Mouser](https://www.mouser.com/ProductDetail/SparkFun/PRT-12796) | $1 |
+| **Micro-USB cable (data-capable), 250-300 mm** | Connects the LEVM's CP2105 serial bridge to the Pi — the LEVM's USB port is micro-USB. Charge-only cables will not enumerate. Length: on the v2 enclosure the board hangs antenna-out from the bottom-left standoffs, turned so the TX antennas sit above the RX antennas, which puts its micro-USB (`J5`) at the corner facing the Pi: ~70 mm from the Pi's USB-A ports in a straight line, ~110 mm as routed. 150 mm is the shortest that still leaves room for the two plug bodies and the bends; 250-300 mm (10-12 in) is comfortable | Any | $5 |
+| **Jumper wire** | 1 wire: detector `GATE` → Pi BCM17 / physical pin 11, alongside the existing `GATE` → OPS `HOST_INT`. Female/female again — comes out of the same 300 mm SparkFun PRT-09389 pack as the sound-trigger wires above. On the v2 enclosure the detector (on the screen, front half) to the Pi header is ~85 mm in a straight line and ~120 mm as routed; 150 mm reaches with the case closed but not with the front half lifted off, which is why the pack is 300 mm | [Mouser](https://www.mouser.com/c/?q=PRT-09389) | $1 |
 
 The board needs **custom firmware** — it does not work out of the box. The
 stock TI demo does not expose the raw radar cube OpenFlight needs. A validated
@@ -99,7 +99,7 @@ tilt when the rig is placed on uneven ground.
 |------|-------------|------|--------|
 | **Adafruit LIS3DH breakout** | Triple-axis accelerometer with STEMMA QT connectors | [Adafruit product 2809](https://www.adafruit.com/product/2809) | $5 |
 | **JST-SH cable kit (Qwiic-to-Dupont)** | Qwiic/STEMMA QT to female Dupont jumpers, used in the validated build. The LIS3DH plugs into its STEMMA QT socket and the Dupont ends push straight onto the Pi GPIO header, so no soldering is needed — the alternative is soldering a header onto the breakout and wiring that by hand | [Amazon](https://www.amazon.com/Connector-Compatible-Development-Sensors-Drivers/dp/B0GJPRX4YT) | ~$10 |
-| **Qwiic-to-Dupont cable (single)** | Mouser-stocked equivalent of the kit above: one JST-SH 4-pin to female Dupont sockets cable (Adafruit 4397, Mouser 485-4397). Enough on its own for the LIS3DH → Pi header run, and it keeps the whole inclinometer orderable from Mouser. 150 mm is the only length Adafruit makes in this JST-SH-to-female-socket configuration; the shorter 50-100 mm Qwiic cables are Qwiic-to-Qwiic and have no Dupont end. The chain does not have to stop at the LIS3DH: its second STEMMA QT socket can carry a Qwiic-to-Qwiic cable further down to the DS3502 digital potentiometer in the Optional table (sound-trigger gain research), so one Pi-to-header cable serves both boards | [Mouser](https://www.mouser.com/en/ProductDetail/Adafruit/4397) | ~$1 |
+| **Qwiic-to-Dupont cable (single)** | Mouser-stocked equivalent of the kit above: one JST-SH 4-pin to female Dupont sockets cable (Adafruit 4397, Mouser 485-4397). Enough on its own for the LIS3DH → Pi header run, and it keeps the whole inclinometer orderable from Mouser. 150 mm is the only length Adafruit makes in this JST-SH-to-female-socket configuration; the shorter 50-100 mm Qwiic cables are Qwiic-to-Qwiic and have no Dupont end. The chain does not have to stop at the LIS3DH: its second STEMMA QT socket can carry a Qwiic-to-Qwiic cable further down to the DS3502 digital potentiometer in the Optional table (sound-trigger gain research), so one Pi-to-header cable serves both boards. Length check on the v2 enclosure: the Pi header to the LIS3DH pad on the floor, left of the UPS stack, is ~105 mm in a straight line and ~140 mm routed down the side of the stack, so the 150 mm cable reaches with about a centimetre to spare — plug it into the LIS3DH socket nearer the Pi | [Mouser](https://www.mouser.com/en/ProductDetail/Adafruit/4397) | ~$1 |
 
 See the **[LIS3DH Inclinometer Setup Guide](../build/inclinometer.md)** for wiring,
 mounting, calibration, startup flags, and troubleshooting.
@@ -149,32 +149,65 @@ One unit is mounted vertically (launch angle), one horizontally (club path / aim
 |------|-------------|------|--------|
 | **Geekworm X1202 UPS HAT** | Rechargeable Pi 5 power using four matching flat-top 18650 Li-ion cells. Cells are not included | [Geekworm](https://geekworm.com/products/x1202) / [Amazon](https://www.amazon.com/dp/B0CRZ4ZXQW) | ~$48 + cells |
 | **Geekworm X1206 UPS HAT** | Larger rechargeable Pi 5 power option using four matching flat-top 21700 Li-ion cells (unprotected only, per Geekworm), advertised up to 20,000mAh total. The four 21700 holders are on the board, like the X1202's 18650 holders, so no separate holder is needed; cells are not included. Same XH2.54 power-button header as the X1202, so the button row below fits it too. Its V2.0 DC input is 9-18V at 3A or more (narrower than the X1202's 6-18V), so the 12V examples in the adapter row apply; USB-C input is 5V 5A. No Amazon listing was found, so it is a Geekworm-direct order today | [Geekworm](https://geekworm.com/products/x1206) | $52 + cells |
-| **X1202 power button: Adafruit 16 mm momentary button (1445) + XH quick-connect leads (1152)** | The X1202/X1206 expose their external power button on an XH2.54 2-pin header and need a momentary (spring-back) switch: the board reads press length the way the Pi 5 power button does, so a latching or toggle switch will not work. The 1445 is a 16 mm panel-mount momentary push button (normally open, two 0.11" tabs). The 1152 pack holds ten 20 cm wire pairs, each ending in a 2-pin JST XH plug for the header and two pre-crimped 0.11" quick-connects that push onto the button's tabs, so nothing is soldered or crimped; Adafruit's 1445 page names the 1152 pairs as its wiring. Needs a 16 mm panel hole. Adafruit showed the 1152 out of stock when checked and its Amazon listing (B00SK6M36U) as unavailable; Mouser's stock is unverified | [Mouser (1445)](https://www.mouser.com/ProductDetail/Adafruit/1445) / [Mouser (1152)](https://www.mouser.com/ProductDetail/Adafruit/1152) / [Adafruit](https://www.adafruit.com/product/1445) | ~$6 |
+| **X1202 power button: Adafruit 16 mm momentary button (1445) + XH quick-connect leads (1152)** | The X1202/X1206 expose their external power button on an XH2.54 2-pin header and need a momentary (spring-back) switch: the board reads press length the way the Pi 5 power button does, so a latching or toggle switch will not work. The 1445 is a 16 mm panel-mount momentary push button (normally open, two 0.11" tabs). The 1152 pack holds ten 20 cm wire pairs, each ending in a 2-pin JST XH plug for the header and two pre-crimped 0.11" quick-connects that push onto the button's tabs, so nothing is soldered or crimped; Adafruit's 1445 page names the 1152 pairs as its wiring. Needs a 16 mm panel hole. Adafruit showed the 1152 out of stock when checked and its Amazon listing (B00SK6M36U) as unavailable; Mouser's stock is unverified. **Lead length, open:** the 1152's 200 mm leads do not reach on the v2 enclosure. The button hole is in the top wall at the left, the X1202's `PSW` header is at the bottom-right of the UPS board, and the shortest route around the Pi stack is ~250 mm (~180 mm straight-line). Either move the button hole to the right-hand end of the top wall, which brings the run to ~160 mm so the 1152 reaches, or find 300 mm XH-to-spade leads; none Mouser-stocked was found | [Mouser (1445)](https://www.mouser.com/ProductDetail/Adafruit/1445) / [Mouser (1152)](https://www.mouser.com/ProductDetail/Adafruit/1152) / [Adafruit](https://www.adafruit.com/product/1445) | ~$6 |
 | **DC adapter for the X1202 (5.5 × 2.1 mm barrel, center positive, 6-18V, 3A or more)** | Feeds the X1202 through its barrel jack instead of USB-C, which is the better input for a cased build: no USB PD negotiation to fail and no USB-C extension to sag. The X1202 accepts 6-18V DC on that jack and converts it to the 5.1V 5A the Pi 5 needs while also charging the cells. Geekworm's stated requirement is a current, not a wattage: "6-18Vdc, ≥3A", with charging at up to 3.2A into the cells; it publishes no watt figure. Where the power goes: the Pi 5 can draw up to 25.5W (5.1V × 5A) with both radars on its USB budget, and charging adds up to about 12W when the cells are low, plus converter losses. So the same 3A buys different things at different voltages: at 12V (36W) it runs the Pi at full load and charges at the same time, which is why Geekworm's own adapters are 12V; at 9V (27W) it runs the Pi but charging slows under load; at 6V (18W) it cannot carry a full Pi load and the cells drain while plugged in. **Check the amps against the voltage** rather than treating "6-18V" as "any adapter": a little over 25W is enough to run the Pi, not to run it and charge at full rate, and 12-18V at 3A or more covers both. Examples: MEAN WELL GST36 (12V 3A; GST36U12-P1J US plug, GST36E12-P1J EU plug, both at Mouser) or Geekworm's own PSU60 (12V 5A, also sold as an Amazon bundle with the X1202). Never connect the DC jack and the USB-C input at the same time | [Mouser (EU plug)](https://www.mouser.com/en/ProductDetail/MEAN-WELL/GST36E12-P1J) / [Mouser (US plug)](https://www.mouser.com/c/?q=GST36U12-P1J) / [Amazon (PSU60)](https://www.amazon.com/dp/B0BDF89DCB) | ~$15 |
 | **InnoMaker OV9281 global-shutter camera** | High-speed monochrome camera for experimental vision work. Camera software is not enabled in the production kiosk path | [Amazon](https://www.amazon.com/dp/B09WTP5GZH?th=1) | ~$30 |
 | **Adafruit DS3502 digital potentiometer** | I2C-controlled 10K digital potentiometer (STEMMA QT / Qwiic). Intended for the SEN-14262 `R17` gain trim: installed in series with a fixed 37kΩ resistor it gives a software-adjustable 37-47kΩ range, so preamp gain can be tuned from code instead of desoldering and swapping a fixed resistor. **Not yet built or tested** — no code drives it, and [sound-trigger-wiring.md](../build/sound-trigger.md) still assumes a soldered R17. Wiring plan: further down the same Qwiic chain as the inclinometer (Pi → Qwiic-to-Dupont → LIS3DH → Qwiic-to-Qwiic → DS3502), so it takes no extra Pi header pins. Research item for the sound-trigger path only; moot if the [PR #221](https://github.com/open-flight/openflight/pull/221) internal trigger replaces the sound trigger | [Adafruit](https://www.adafruit.com/product/4286) | ~$5 |
-| **STEMMA QT / Qwiic-to-Qwiic cable (for the DS3502)** | The link from the LIS3DH's second STEMMA QT socket down to the DS3502, so the digital potentiometer joins the same I2C chain without taking any Pi header pins. Only needed if the DS3502 is fitted. Sold in 50-400 mm lengths; which one is **TODO** — it depends on where the DS3502 sits relative to the LIS3DH, and the case is still in development | [Adafruit](https://www.adafruit.com/product/4399) | ~$1 |
+| **STEMMA QT / Qwiic-to-Qwiic cable (for the DS3502)** | The link from the LIS3DH's second STEMMA QT socket down to the DS3502, so the digital potentiometer joins the same I2C chain without taking any Pi header pins. Only needed if the DS3502 is fitted. Sold in 50-400 mm lengths; 100 mm (Adafruit 4210) is right if the DS3502 sits beside the LIS3DH on the enclosure floor, which is the sensible place for it: the two wires from its wiper to `R17` on the sound detector then run to the front half of the case (~175 mm straight, ~300 mm routed, so they come out of the same 300 mm jumper pack) rather than the I2C chain doing so | [Adafruit](https://www.adafruit.com/product/4210) | ~$1 |
 
 See [Camera and YOLO Experiments](../development/camera-yolo.md) before buying the
 camera; the standard setup does not install its optional software dependencies.
 
 ---
 
+## Cable Lengths (Enclosure v2)
+
+Measured on the 2026-09-09 Onshape export of the v2 back housing (the
+`back-pi-display2` variant, for the Touch Display 2), from the insert pockets
+and standoffs that locate each board: the OPS243 on the 67 × 82 mm pattern at
+the bottom right, the IWR6843LEVM on the 48.5 × 49 mm pattern at the bottom
+left, the X1202 with the Pi stacked on it over the battery hatch, the LIS3DH on
+its 21 × 13 mm pad on the floor to the left of that stack, and the camera on
+the top shelf. The sound detector's position comes from the build, not the
+CAD: it is screwed to the back of the display in the front half, top-right of
+the case when closed, and its depth is assumed. Straight-line is
+connector-to-connector; routed adds the bends around the Pi/UPS stack and over
+the rim. Buy the length in the last column.
+
+| Run | From → to | Straight-line | Routed | Buy |
+|-----|-----------|---------------|--------|-----|
+| OPS243 UART + 5V + GND (4 wires) | OPS243 `J3` (bottom-right standoffs, header turned toward the Pi) → Pi GPIO header | ~50 mm | ~80 mm | 150 mm works; the 300 mm pack covers it |
+| Sound trigger `GATE` → `HOST_INT` | Detector on the screen (front half) → OPS243 `J3` pin 3 | ~130 mm | ~175 mm | 300 mm |
+| Sound trigger `VCC`, `GND`, and `GATE` → BCM17 | Detector → Pi GPIO header | ~85 mm | ~120 mm | 300 mm (150 mm reaches closed, not opened) |
+| Inclinometer | Pi GPIO header → LIS3DH on the floor, left of the UPS stack | ~105 mm | ~140 mm | 150 mm Qwiic-to-Dupont, ~10 mm spare |
+| DS3502, if fitted | LIS3DH second socket → DS3502 beside it | ~25 mm | ~60 mm | 100 mm Qwiic-to-Qwiic |
+| IWR6843 USB | LEVM `J5` (bottom-left standoffs, TX above RX, so `J5` faces the Pi) → Pi USB-A | ~70 mm | ~110 mm | 250-300 mm micro-USB; 150 mm is the floor |
+| X1202 power button | 16 mm button in the top wall, left → X1202 `PSW` header, bottom-right of the UPS | ~180 mm | ~250 mm | 300 mm; the 1152's 200 mm leads fall short |
+| Case DC jack (not in the tables yet) | Panel jack, top-right → X1202 barrel jack, bottom-left of the UPS | ~165 mm | ~220 mm | 250 mm pigtail |
+
+Both radars hang from the tops of their standoffs with the antenna side facing
+the back wall, so their connectors point at the floor and the wires plug in
+from below; the Pi header is level with the rim. The halves are held together
+by through-bolts, so servicing means lifting the front half off and laying it
+beside the back half, which adds ~100 mm to the two detector runs. That, not
+the closed-case distance, is why the detector wires are 300 mm.
+
 ## Cost Summary
 
 | Category | ~Price |
 |----------|--------|
 | Core (OPS243, Pi 5, Display) | $355 |
-| Sound Trigger (SEN-14262 + resistor + wires) | $16 |
+| Sound Trigger (SEN-14262 + resistor + wires) | $18 |
 | Power & Accessories | $37 |
-| **Subtotal, no angle radar** | **~$408** |
+| **Subtotal, no angle radar** | **~$410** |
 | Angle Radar (IWR6843LEVM + cable + wire) — **current** | $156 |
-| **Total with angle radar** | **~$564** |
+| **Total with angle radar** | **~$566** |
 | Optional Enclosure Inclinometer (LIS3DH + Qwiic-to-Dupont cable) | $15 |
 | Optional extras (X1202 UPS HAT, four 18650 cells, 16 mm power button + leads, OV9281 camera) | $108 |
-| **Complete build (total with angle radar + inclinometer + optional extras)** | **~$687** |
+| Enclosure filament (v2 case, ~600 g PLA, estimate) | $15 |
+| **Complete build (total with angle radar + inclinometer + optional extras + filament)** | **~$704** |
 | Optional extras with the X1206 instead (X1206 UPS HAT, four 21700 cells, 16 mm power button + leads, OV9281 camera) | $120 |
-| **Complete build with the X1206 instead** | **~$699** |
+| **Complete build with the X1206 instead** | **~$716** |
 | Angle Radar (2× K-LD7 + FTDI adapters) — **deprecated** | $140 |
 
 The complete-build line uses the X1202 as the UPS (not the X1206), estimates its
@@ -183,16 +216,29 @@ MJ1 each sells for about that), and leaves out the deprecated K-LD7 path, the
 untested DS3502 and its Qwiic-to-Qwiic link, and the 12V DC adapter, which
 replaces the 27W USB-C supply already counted rather than adding to it.
 
+The enclosure filament line is an estimate from the CAD, not a slicer figure.
+The v2 back housing is a 195 × 248 mm tray, 52 mm deep inside, with 3.5 mm
+walls, a 2.5 mm floor, 57 mm radar standoffs and four corner bolt columns:
+about 300 g of PLA at two walls and 10 % infill. The front half (the display
+frame) is ~170 g, the kickstand ~70 g, the battery hatch and the two kickstand
+pegs ~30 g together, and supports plus a purge line take the print to roughly
+600 g, two-thirds of a 1 kg spool. At $20-25/kg (Bambu PLA Basic lists at
+$24.99) that is ~$15. Replace it with the sliced weight once the v2 files are
+published. Heat-set inserts, screws and the kickstand ball plunger are in the
+enclosure repository's own parts list
+([openflight-enclosure#4](https://github.com/open-flight/openflight-enclosure/issues/4)),
+not here.
+
 With the X1206 instead, the extras are $52 for the HAT (Geekworm list price)
 + four flat-top 21700 cells at ~$8 each ($32; a Samsung 50E or Molicel P42A
 sells for $6-9) + the same $6 button pair + the $30 camera = $120, and the
-complete build comes to ~$699. Nothing else changes: the X1206 V2.0 carries its
+complete build comes to ~$716. Nothing else changes: the X1206 V2.0 carries its
 four 21700 holders on the board, uses the same power-button header, and takes
 the same 12V adapter, since its 9-18V input sits inside the X1202's range.
 
 If the [PR #221](https://github.com/open-flight/openflight/pull/221) internal
 trigger lands and your OPS243 firmware can be updated, the Sound Trigger line
-($16) becomes optional and drops out of every total above.
+($18) becomes optional and drops out of every total above.
 
 OpenFlight works without any angle radar: you get ball speed, club speed, smash
 factor, spin rate, and estimated carry. The angle radar adds measured launch
