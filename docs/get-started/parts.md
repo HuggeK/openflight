@@ -192,6 +192,45 @@ by through-bolts, so servicing means lifting the front half off and laying it
 beside the back half, which adds ~100 mm to the two detector runs. That, not
 the closed-case distance, is why the detector wires are 300 mm.
 
+## Enclosure Hardware (Inserts, Screws, Plunger)
+
+What the v2 case needs to hold its boards and itself together, counted from
+the insert pockets in the v2 back housing plus the front housing and kickstand
+as drawn in the August assembly. The parts follow the decisions in
+[openflight-enclosure#4](https://github.com/open-flight/openflight-enclosure/issues/4):
+PEM's straight-wall brass IUTB heat-set inserts and Keystone pan-head screws
+from Mouser, and the two items Mouser does not carry from Amazon. Prices are
+small-quantity list prices from distributors that publish them (Bossard for
+the inserts, DigiKey for the Keystone parts, J.W. Winco for the plunger);
+Mouser's own prices and minimum quantities are unverified, see the note under
+the table.
+
+| Part | Needed | Where it goes | Link | ~Price |
+|------|--------|---------------|------|--------|
+| **PEM SI IUTB-M2.5 heat-set insert** (brass, 5.74 mm long, Ø4.0 mm hole, 6.5 mm deep) | 24 (buy 30) | 20 in the back housing: OPS243 ×4, IWR6843LEVM ×4, LIS3DH ×4, X1202 stack ×4, battery hatch ×4; 4 in the front housing for the through-bolts | [Mouser](https://www.mouser.com/ProductDetail/SI/IUTB-M25) | $6 |
+| **PEM SI IUTB-M2 heat-set insert** (brass, 4.0 mm long, Ø3.2 mm hole) | 4 (buy 10) | camera board | [Mouser](https://www.mouser.com/ProductDetail/SI/IUTB-M2) | $2 |
+| **PEM SI IUTB-M3 heat-set insert** (brass, 5.74 mm long, Ø4.0 mm hole) | 2 (buy 10) | kickstand pegs into the handle | [Mouser](https://www.mouser.com/ProductDetail/SI/IUTB-M3) | $2 |
+| **M2.5 × 6 pan-head screw** (Keystone Electronics 29301, steel, zinc) | 20 (buy 25) | the same five sets of four: OPS243, IWR6843LEVM, LIS3DH, X1202, battery hatch. 1.6 mm PCB + 3.4 mm into the insert; the hatch is 3.5 mm thick, so the same screw does | [Mouser](https://www.mouser.com/c/?q=Keystone%2029301) | $5 |
+| **M2 × 4 stainless pan-head screw** (APM HEXSEAL RM2X4MM 5701, O-ring under the head) | 4 | camera board; the only metal M2 × 0.4 screw Mouser stocks, about $1.15 each. Essentra 50M020040D006B (M2 × 6, nylon) is the $0.50 alternative for the same four holes | [Mouser](https://www.mouser.com/c/?q=RM2X4MM%205701) | $5 |
+| **M3 × 12 pan-head screw** (Keystone Electronics 29314) | 2 (buy 10) | kickstand peg to handle, from inside | [Mouser](https://www.mouser.com/c/?q=Keystone%2029314) | $1 for two, $4 for ten |
+| **#4 flat washer** (Keystone Electronics 4692, 3.25 / 7.1 / 0.64 mm) | 8 (buy 10) | under the heads of the eight M2.5 × 35 through-bolts, so the heads do not embed in the printed plastic each time the case is opened | [Mouser](https://www.mouser.com/c/?q=Keystone%204692) | $1 |
+| **M2.5 × 35 socket-head screw** (DIN 912 / ISO 4762, A2 stainless) | 8 | screen to back housing ×4, front to back housing ×4. Mouser's longest metal M2.5 is 16 mm, so this stays an Amazon part until the CAD moves the front-housing inserts to the flange (the design option in openflight-enclosure#4) | [Amazon (25 pc)](https://www.amazon.com/dp/B082GJTKTY) | ~$10 |
+| **Press-fit ball plunger, 3 mm × 4 mm, Ø2.4 mm stainless ball** (Ganter GN 614-3-NI class; McMaster 6052N11 in the drawing) | 2 | one per kickstand peg, the detent that holds the kickstand at its 10° stop. Not on Mouser: J.W. Winco / Ganter GN 614-3-NI (about $2.30 each, EU too), or a generic 5-pack on Amazon | [J.W. Winco](https://www.jwwinco.com/en-us/products/3.1-Indexing-locking-blocking-with-pins-and-ball-shaped-elements/Spring-plungers/GN-614-Stainless-Steel-Short-Press-Fit-Ball-Plungers) / [Amazon (5 pc)](https://www.amazon.com/dp/B0BXT6TJBV) | $5 |
+
+About $37 as listed, $31 at exact counts; the Cost Summary carries $35.
+What does not need buying: the Touch Display 2 mounts on its own tapped pads
+with the M2.5 screws in its box, the Pi mounts to the X1202 with Geekworm's
+supplied spacers, and the two housings need no inserts for the display.
+
+> **Before ordering the inserts:** Mouser sometimes sells PEM inserts in
+> multiples of 100. If all three lines come that way the inserts are ~$60
+> rather than ~$10, and the CNC Kitchen "Standard" set on Amazon (same hole
+> sizes, per openflight-enclosure#4) is the cheaper route. The IUTB-M2.5 price
+> is taken as its M3 sibling's ($0.21 at 1-249 from Bossard; the same body),
+> and the through-bolt pack price is a typical 25-pack figure, unverified on
+> Amazon. The through-bolt count and length follow the August drawing; the v2
+> CAD may shorten them.
+
 ## Cost Summary
 
 | Category | ~Price |
@@ -204,10 +243,11 @@ the closed-case distance, is why the detector wires are 300 mm.
 | **Total with angle radar** | **~$566** |
 | Optional Enclosure Inclinometer (LIS3DH + Qwiic-to-Dupont cable) | $15 |
 | Optional extras (X1202 UPS HAT, four 18650 cells, 16 mm power button + leads, OV9281 camera) | $108 |
-| Enclosure filament (v2 case, ~600 g PLA, estimate) | $15 |
-| **Complete build (total with angle radar + inclinometer + optional extras + filament)** | **~$704** |
+| Enclosure filament (v2 case, ~600 g PETG, estimate) | $15 |
+| Enclosure hardware (30 inserts, screws, washers, two ball plungers) | $35 |
+| **Complete build (total with angle radar + inclinometer + optional extras + filament + hardware)** | **~$739** |
 | Optional extras with the X1206 instead (X1206 UPS HAT, four 21700 cells, 16 mm power button + leads, OV9281 camera) | $120 |
-| **Complete build with the X1206 instead** | **~$716** |
+| **Complete build with the X1206 instead** | **~$751** |
 | Angle Radar (2× K-LD7 + FTDI adapters) — **deprecated** | $140 |
 
 The complete-build line uses the X1202 as the UPS (not the X1206), estimates its
@@ -216,23 +256,33 @@ MJ1 each sells for about that), and leaves out the deprecated K-LD7 path, the
 untested DS3502 and its Qwiic-to-Qwiic link, and the 12V DC adapter, which
 replaces the 27W USB-C supply already counted rather than adding to it.
 
-The enclosure filament line is an estimate from the CAD, not a slicer figure.
-The v2 back housing is a 195 × 248 mm tray, 52 mm deep inside, with 3.5 mm
-walls, a 2.5 mm floor, 57 mm radar standoffs and four corner bolt columns:
-about 300 g of PLA at two walls and 10 % infill. The front half (the display
-frame) is ~170 g, the kickstand ~70 g, the battery hatch and the two kickstand
-pegs ~30 g together, and supports plus a purge line take the print to roughly
-600 g, two-thirds of a 1 kg spool. At $20-25/kg (Bambu PLA Basic lists at
-$24.99) that is ~$15. Replace it with the sliced weight once the v2 files are
-published. Heat-set inserts, screws and the kickstand ball plunger are in the
-enclosure repository's own parts list
-([openflight-enclosure#4](https://github.com/open-flight/openflight-enclosure/issues/4)),
-not here.
+The enclosure filament line is an estimate from the CAD, not a slicer figure,
+and it assumes **PETG**, not PLA: the case lives outdoors in the sun, and PETG
+holds up to UV and to a hot car far better than PLA (it softens at ~80 °C
+against PLA's ~60 °C), while still being a stock spool everywhere and an easy
+print on an enclosed printer such as the P1S. The v2 back housing is a
+195 × 248 mm tray, 52 mm deep inside, with 3.5 mm walls, a 2.5 mm floor,
+57 mm radar standoffs and four corner bolt columns: about 300 g at two walls
+and 10 % infill. The front half (the display frame) is ~170 g, the kickstand
+~70 g, the battery hatch and the two kickstand pegs ~30 g together, and
+supports plus a purge line take the print to roughly 600 g of PETG (a few
+percent more than the same parts in PLA), two-thirds of a 1 kg spool. At
+$20-25/kg that is ~$15. Replace it with the sliced weight once the v2 files
+are published. Heat-set inserts, screws and the kickstand ball plunger are in
+the enclosure repository's own parts list
+([openflight-enclosure#4](https://github.com/open-flight/openflight-enclosure/issues/4))
+and are priced in the Enclosure Hardware table above.
+
+The enclosure hardware line is that table at small-quantity distributor
+prices: ~$31 at exact counts, ~$40 once the spare inserts and screws the packs
+give you are counted, carried here as $35. Everything but the eight M2.5 × 35
+through-bolts and the two ball plungers is a Mouser line, so it rides in the
+same order as the radars.
 
 With the X1206 instead, the extras are $52 for the HAT (Geekworm list price)
 + four flat-top 21700 cells at ~$8 each ($32; a Samsung 50E or Molicel P42A
 sells for $6-9) + the same $6 button pair + the $30 camera = $120, and the
-complete build comes to ~$716. Nothing else changes: the X1206 V2.0 carries its
+complete build comes to ~$751. Nothing else changes: the X1206 V2.0 carries its
 four 21700 holders on the board, uses the same power-button header, and takes
 the same 12V adapter, since its 9-18V input sits inside the X1202's range.
 
