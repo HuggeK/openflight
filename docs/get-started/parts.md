@@ -183,7 +183,7 @@ the rim. Buy the length in the last column.
 | DS3502, if fitted | LIS3DH second socket → DS3502 beside it | ~25 mm | ~60 mm | 100 mm Qwiic-to-Qwiic |
 | IWR6843 USB | LEVM `J5` (bottom-left standoffs, TX above RX, so `J5` faces the Pi) → Pi USB-A | ~70 mm | ~110 mm | 250-300 mm micro-USB; 150 mm is the floor |
 | X1202 power button | 16 mm button in the top wall, left → X1202 `PSW` header, bottom-right of the UPS | ~180 mm | ~250 mm | 300 mm; the 1152's 200 mm leads fall short |
-| Case DC jack (not in the tables yet) | Panel jack, top-right → X1202 barrel jack, bottom-left of the UPS | ~165 mm | ~220 mm | 250 mm pigtail |
+| Case DC jack (not in the tables yet) | Panel jack in the top shelf, right of the camera → X1202 barrel jack, bottom-left of the UPS | ~145 mm | ~205 mm | 250 mm pigtail |
 
 Both radars hang from the tops of their standoffs with the antenna side facing
 the back wall, so their connectors point at the floor and the wires plug in
