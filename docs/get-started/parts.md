@@ -162,6 +162,13 @@ camera; the standard setup does not install its optional software dependencies.
 
 ## Cable Lengths (Enclosure v2)
 
+The parts rows above already say which length to buy; this section is the
+measurement behind them, for anyone changing the enclosure or the wiring.
+Ordinary builders can skip it.
+
+<details markdown="1">
+<summary>Measured cable runs on the v2 enclosure</summary>
+
 Measured on the 2026-09-09 Onshape export of the v2 back housing (the
 `back-pi-display2` variant, for the Touch Display 2), from the insert pockets
 and standoffs that locate each board: the OPS243 on the 67 × 82 mm pattern at
@@ -191,6 +198,8 @@ from below; the Pi header is level with the rim. The halves are held together
 by through-bolts, so servicing means lifting the front half off and laying it
 beside the back half, which adds ~100 mm to the two detector runs. That, not
 the closed-case distance, is why the detector wires are 300 mm.
+
+</details>
 
 ## Enclosure Hardware (Inserts, Screws, Plunger)
 
