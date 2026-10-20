@@ -86,6 +86,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   full horizontal speed, overstating attack angle on any shot with club path.
 
 ### Added
+- **Flash OPS243 firmware from the Pi with a J-Link.** `firmware/flash_ops243.py`
+  drives a SEGGER J-Link (the EDU Mini is enough) through J-Link Commander, so
+  the 1.3.2 update no longer needs a Windows PC, Java/JavaFX or XMC Flasher.
+  It reads the XMC4 chip ID to pick the device, refuses HEX files that fall
+  outside that part's flash, never mass-erases, and verifies every programmed
+  range by read-back. Works on Raspberry Pi OS, Linux, macOS and Windows. See
+  [Update OPS243 Firmware](setup/ops243-firmware.md).
 - **Mock mode simulates the optional hardware phones react to.** So a Pi
   with no radar, UPS or camera can exercise every phone event: mock shots
   now report `shot_processing` `capturing` then `calculating` like the radar,

@@ -18,5 +18,6 @@ image ships in [`releases/`](releases/), and the
 | --- | --- |
 | `iwr6843/` | Firmware sources |
 | `releases/` | Prebuilt, validated firmware images |
-| `flash_iwr6843.py` | Flashing tool |
+| `flash_iwr6843.py` | IWR6843 flashing tool |
+| `flash_ops243.py` | OPS243 flashing tool via SEGGER J-Link ([guide](../docs/setup/ops243-firmware.md)) |
 | `Dockerfile`, `Makefile` | Build toolchain |

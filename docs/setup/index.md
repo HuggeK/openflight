@@ -16,6 +16,11 @@ Software configuration, once the hardware is wired.
 
     The one-time flash-persist step. Hardware triggers do not work without it.
 
+- :material-chip: **[Update OPS243 firmware](ops243-firmware.md)**
+
+    Flash new radar firmware from the Pi with a J-Link. Only for boards older
+    than 1.3.2 that need the internal hardware trigger.
+
 - :material-power: **[Auto-start & kiosk mode](auto-start.md)**
 
     Run as a systemd service on boot; fullscreen, manual, and SSH variants.
