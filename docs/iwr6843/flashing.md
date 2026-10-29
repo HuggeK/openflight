@@ -36,11 +36,12 @@ Set the IWR6843LEVM boot switches to:
 S1.1 ON, S1.2 OFF, S1.3 ON, S1.4 ON, S1.5 OFF
 ```
 
-![IWR6843LEVM boot switch S1 as it reads on the board: ON is printed along the top edge next to the solder legs and levers 1 to 6 run left to right, so a lever pushed up is on. Flashing: S1.1 on, S1.2 off, S1.3 on, S1.4 on, S1.5 off. Functional: S1.1 off, S1.2 off, S1.3 on, S1.4 on, S1.5 off. Only S1.1 changes; S1.6 is not used.](../assets/iwr6843-s1-boot-switch.svg)
+![IWR6843LEVM boot switch S1 as seen on the mounted board: levers numbered 6 to 1 from left to right along the top, so S1.1 is at the right end, and ON printed along the bottom edge next to the solder legs, so a lever pushed down is on. Flashing: S1.1 on, S1.2 off, S1.3 on, S1.4 on, S1.5 off. Functional: S1.1 off, S1.2 off, S1.3 on, S1.4 on, S1.5 off. Only S1.1 changes; S1.6 is not used.](../assets/iwr6843-s1-boot-switch.svg)
 
-*S1 is a six-lever DIP switch. Find the `ON` printed on its body: a lever pushed
-toward it is on. Only S1.1 moves between flashing and normal use. RESET is the
-S2 push button on the board.*
+*S1 is a six-lever DIP switch, drawn as it faces you on the mounted board: S1.1
+is at the right end and the `ON` print is along the bottom edge, by the solder
+legs. A lever pushed toward `ON` is on. Only S1.1 moves between flashing and
+normal use. RESET is the S2 push button on the board.*
 
 Do not press RESET yet. The flashing script opens the UART first and tells you
 when to reset the board.
