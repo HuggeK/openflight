@@ -36,6 +36,12 @@ Set the IWR6843LEVM boot switches to:
 S1.1 ON, S1.2 OFF, S1.3 ON, S1.4 ON, S1.5 OFF
 ```
 
+![IWR6843LEVM boot switch S1 as it reads on the board: ON is printed along the top edge next to the solder legs and levers 1 to 6 run left to right, so a lever pushed up is on. Flashing: S1.1 on, S1.2 off, S1.3 on, S1.4 on, S1.5 off. Functional: S1.1 off, S1.2 off, S1.3 on, S1.4 on, S1.5 off. Only S1.1 changes; S1.6 is not used.](../assets/iwr6843-s1-boot-switch.svg)
+
+*S1 is a six-lever DIP switch. Find the `ON` printed on its body: a lever pushed
+toward it is on. Only S1.1 moves between flashing and normal use. RESET is the
+S2 push button on the board.*
+
 Do not press RESET yet. The flashing script opens the UART first and tells you
 when to reset the board.
 
@@ -95,7 +101,7 @@ An erase can take longer than ten seconds.
 
 ### 5. Return To Functional Mode
 
-Set the switches to:
+Set the switches to (the lower row of the diagram in step 2):
 
 ```text
 S1.1 OFF, S1.2 OFF, S1.3 ON, S1.4 ON, S1.5 OFF
