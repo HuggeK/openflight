@@ -776,3 +776,178 @@ def test_startup_failure_prints_the_recovery_hint_to_the_terminal():
     ]
 
     assert re.search(r'error ".*\$recovery"', failure_fn), failure_fn
+
+
+# A server stand-in for the full launcher: answers the readiness probe, exits
+# after FAKE_SHUTDOWN_DELAY_S on /api/shutdown, SIGINT or SIGTERM (real hardware
+# shutdown takes seconds), and records its pid.
+_FAKE_SERVER = """
+import http.server, os, signal, sys, threading, time
+port = int(sys.argv[sys.argv.index("--web-port") + 1])
+delay = float(os.environ["FAKE_SHUTDOWN_DELAY_S"])
+open(os.environ["FAKE_SERVER_PID_FILE"], "w").write(str(os.getpid()))
+def slow_exit(*_):
+    time.sleep(delay)
+    os._exit(0)
+def on_signal(*_):
+    threading.Thread(target=slow_exit, daemon=True).start()
+signal.signal(signal.SIGINT, on_signal)
+signal.signal(signal.SIGTERM, on_signal)
+class Handler(http.server.BaseHTTPRequestHandler):
+    def log_message(self, *_):
+        pass
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+    def do_POST(self):
+        self.send_response(200)
+        self.end_headers()
+        on_signal()
+http.server.ThreadingHTTPServer(("127.0.0.1", port), Handler).serve_forever()
+"""
+
+_FAKE_UV = """#!/usr/bin/env bash
+[ "$1" = run ] || exit 0
+shift
+while [ "${1:-}" = --no-sync ]; do shift; done
+[ "${1:-}" = openflight-server ] || exit 0
+exec python3 "$FAKE_SERVER_PY" "$@"
+"""
+
+
+def _free_port() -> int:
+    import socket  # pylint: disable=import-outside-toplevel
+
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        return sock.getsockname()[1]
+
+
+class _RunningKiosk:
+    """The real start-kiosk.sh over a fake uv, server and Electron, in its own session."""
+
+    def __init__(self, tmp_path: Path, shutdown_delay_s: float):
+        project_dir = tmp_path / "project"
+        shutil.copytree(REPO_ROOT / "scripts", project_dir / "scripts")
+        (project_dir / "ui" / "dist").mkdir(parents=True)
+        (project_dir / "ui" / "dist" / "index.html").write_text("<html></html>", encoding="utf-8")
+        _make_fake_electron(project_dir)
+        bin_dir = tmp_path / "bin"
+        bin_dir.mkdir()
+        _write_executable(bin_dir / "uv", _FAKE_UV)
+        # start_alloy would otherwise reach for sudo.
+        _write_executable(bin_dir / "systemctl", "#!/bin/sh\nexit 1\n")
+        (tmp_path / "fake_server.py").write_text(_FAKE_SERVER, encoding="utf-8")
+
+        self.log_path = tmp_path / "kiosk.log"
+        self._electron_log = tmp_path / "electron.pids"
+        self._server_pid_file = tmp_path / "server.pid"
+        env = {
+            **os.environ,
+            "PATH": f"{bin_dir}{os.pathsep}{os.environ['PATH']}",
+            "HOME": str(tmp_path),
+            "FAKE_SERVER_PY": str(tmp_path / "fake_server.py"),
+            "FAKE_SERVER_PID_FILE": str(self._server_pid_file),
+            "FAKE_SHUTDOWN_DELAY_S": str(shutdown_delay_s),
+            "OPENFLIGHT_TEST_PID_LOG": str(self._electron_log),
+            "OPENFLIGHT_KIOSK_LOCK_FILE": str(tmp_path / "kiosk.lock"),
+        }
+        with open(self.log_path, "w", encoding="utf-8") as log:
+            self.process = subprocess.Popen(  # pylint: disable=consider-using-with
+                [
+                    "bash",
+                    str(project_dir / "scripts" / "start-kiosk.sh"),
+                    "--web-port",
+                    str(_free_port()),
+                ],
+                env=env,
+                stdout=log,
+                stderr=subprocess.STDOUT,
+                start_new_session=True,
+            )
+        self.browser_pids = _read_pid_log(self._electron_log)
+        deadline = time.monotonic() + 20
+        while "OpenFlight is running" not in self.log():
+            assert time.monotonic() < deadline, f"kiosk never came up: {self.log()}"
+            assert self.process.poll() is None, f"kiosk exited during startup: {self.log()}"
+            time.sleep(0.05)
+        self.server_pid = int(self._server_pid_file.read_text(encoding="utf-8"))
+
+    def log(self) -> str:
+        return self.log_path.read_text(encoding="utf-8")
+
+    def ctrl_c(self) -> None:
+        """What Ctrl+C in the launching terminal does: SIGINT to the foreground group."""
+        os.killpg(self.process.pid, signal.SIGINT)
+
+    def close(self) -> None:
+        """Kill only what this harness started, whatever the launcher left behind."""
+        for pid in [self.process.pid, *self.browser_pids]:
+            try:
+                os.killpg(os.getpgid(pid), signal.SIGKILL)
+            except (ProcessLookupError, PermissionError):
+                pass
+        try:
+            os.kill(self.server_pid, signal.SIGKILL)
+        except (ProcessLookupError, AttributeError):
+            pass
+        self.process.wait(timeout=5)
+
+
+_needs_process_groups = pytest.mark.skipif(
+    shutil.which("setsid") is None or shutil.which("python3") is None or os.name == "nt",
+    reason="launcher shutdown tests need setsid (util-linux) and python3",
+)
+
+
+@pytest.fixture
+def running_kiosk(tmp_path, request):
+    kiosk = _RunningKiosk(tmp_path, shutdown_delay_s=request.param)
+    yield kiosk
+    kiosk.close()
+
+
+@_needs_process_groups
+@pytest.mark.parametrize("running_kiosk", [0.2], indirect=True)
+def test_one_ctrl_c_shuts_the_server_down_gracefully_and_closes_the_browser(running_kiosk):
+    running_kiosk.ctrl_c()
+
+    running_kiosk.process.wait(timeout=30)
+    log = running_kiosk.log()
+    assert _wait_until_dead(running_kiosk.browser_pids) == [], log
+    assert not _is_alive(running_kiosk.server_pid), log
+    assert "Closing kiosk shell" in log
+    assert "Forcing" not in log
+
+
+@_needs_process_groups
+@pytest.mark.parametrize("running_kiosk", [4.0], indirect=True)
+def test_second_ctrl_c_during_server_shutdown_still_closes_the_browser(running_kiosk):
+    """Regression: the second Ctrl+C killed the launcher mid-cleanup, so the kiosk
+    window stayed on screen after the server had gone."""
+    running_kiosk.ctrl_c()
+    time.sleep(1.0)
+    running_kiosk.ctrl_c()
+
+    running_kiosk.process.wait(timeout=30)
+    log = running_kiosk.log()
+    assert _wait_until_dead(running_kiosk.browser_pids) == [], f"browser orphaned: {log}"
+    assert "Closing kiosk shell" in log
+
+
+@_needs_process_groups
+@pytest.mark.parametrize("running_kiosk", [120.0], indirect=True)
+def test_second_ctrl_c_stops_waiting_for_a_slow_server(running_kiosk):
+    """The second Ctrl+C means "stop now": force the server instead of the 20 s grace."""
+    running_kiosk.ctrl_c()
+    time.sleep(1.0)
+    started = time.monotonic()
+    running_kiosk.ctrl_c()
+
+    running_kiosk.process.wait(timeout=30)
+    elapsed = time.monotonic() - started
+    log = running_kiosk.log()
+    assert elapsed < 8, f"launcher took {elapsed:.1f} s after the second Ctrl+C: {log}"
+    assert not _is_alive(running_kiosk.server_pid), log
+    assert _wait_until_dead(running_kiosk.browser_pids) == [], log
+    assert "Forcing" in log

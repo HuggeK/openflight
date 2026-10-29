@@ -19,6 +19,7 @@ SPLASH_PID=""
 BROWSER_PID=""
 BROWSER_PGID=""
 BROWSER_LAUNCHED=false
+FORCE_SHUTDOWN=false
 SERVER_ARGS=()
 
 log() { printf '[OpenFlight] %s\n' "$1"; }
@@ -140,31 +141,41 @@ if [ "$DRY_RUN" = true ]; then
     exit 0
 fi
 
-shutdown_server() {
-    [ -n "$SERVER_PID" ] && kill -0 "$SERVER_PID" 2>/dev/null || return 0
-
-    log "Requesting graceful hardware shutdown..."
-    if curl -fsS --max-time 2 -X POST "http://$HOST:$WEB_PORT/api/shutdown" >/dev/null 2>&1; then
-        for _ in {1..80}; do
-            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
-                wait "$SERVER_PID" 2>/dev/null || true
-                SERVER_PID=""
-                return 0
-            fi
-            sleep 0.25
-        done
-        warn "Server did not complete graceful shutdown within 20 seconds"
-    fi
-
-    kill -TERM "$SERVER_PID" 2>/dev/null || true
-    for _ in {1..8}; do
+wait_for_server_exit() {
+    # Polls every 0.25 s for up to $1 polls. Returns 0 once the server has
+    # exited, 1 on timeout or as soon as a second interrupt asks to force it.
+    local polls="$1" _
+    for ((_ = 0; _ < polls; _++)); do
         if ! kill -0 "$SERVER_PID" 2>/dev/null; then
             wait "$SERVER_PID" 2>/dev/null || true
             SERVER_PID=""
             return 0
         fi
+        if [ "$FORCE_SHUTDOWN" = true ]; then
+            return 1
+        fi
         sleep 0.25
     done
+    return 1
+}
+
+shutdown_server() {
+    [ -n "$SERVER_PID" ] && kill -0 "$SERVER_PID" 2>/dev/null || return 0
+
+    if [ "$FORCE_SHUTDOWN" != true ]; then
+        log "Requesting graceful hardware shutdown..."
+        if curl -fsS --max-time 2 -X POST "http://$HOST:$WEB_PORT/api/shutdown" >/dev/null 2>&1; then
+            wait_for_server_exit 80 && return 0
+            if [ "$FORCE_SHUTDOWN" != true ]; then
+                warn "Server did not complete graceful shutdown within 20 seconds"
+            fi
+        fi
+    fi
+
+    if [ "$FORCE_SHUTDOWN" != true ]; then
+        kill -TERM "$SERVER_PID" 2>/dev/null || true
+        wait_for_server_exit 8 && return 0
+    fi
     warn "Forcing server exit; connected radar hardware may require reset"
     kill -KILL "$SERVER_PID" 2>/dev/null || true
     wait "$SERVER_PID" 2>/dev/null || true
@@ -189,7 +200,12 @@ stop_startup_splash_server() {
 
 cleanup() {
     local exit_code="${1:-$?}"
-    trap - EXIT SIGINT SIGTERM
+    # Hardware shutdown can take 20 s, and people press Ctrl+C again. With the
+    # default handlers back, that second press killed this script before
+    # stop_kiosk_browser, leaving the kiosk window up with no server behind it.
+    # Now it only skips the waiting: the server is forced and cleanup finishes.
+    trap - EXIT
+    trap 'FORCE_SHUTDOWN=true' SIGINT SIGTERM
     log "Shutting down..."
     shutdown_server
     stop_startup_splash_server
