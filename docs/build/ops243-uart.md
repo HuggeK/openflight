@@ -63,10 +63,15 @@ on the board before counting.
 | Pin 6 | `RxD` (in) | 8 | GPIO14 / `TXD0` |
 | Pin 3 | `HOST_INT` | — | sound detector `GATE` (unchanged) |
 
-![OPS243 UART migration wiring: the radar leaves USB and runs from the Raspberry Pi 5 header with 5V on J3 pin 9, ground on pin 10, and a crossed UART pair on pins 7 and 6, while the SEN-14262 GATE output is spliced three ways to J3 pin 3 and Pi physical pin 11.](../assets/ops243-uart-wiring.svg)
+![OPS243 UART wiring without a sound trigger: the radar, drawn with its J3 pins pointing up and the micro-USB to their left, runs from the Raspberry Pi 5 header with 5V on J3 pin 9 to Pi pin 4, ground on J3 pin 10 to Pi pin 6, a crossed UART pair on J3 pins 7 and 6 to Pi pins 10 and 8, and the detection output on J3 pin 1 to Pi pin 12 (GPIO18). The Pi is rotated so its USB ports face up and the header runs down its left edge.](../assets/ops243-uart-wiring.svg)
 
-*The diagram picks physical pin 4 for 5V and pin 14 for ground; any 5V and any
-GND pin work as long as the ground is the same rail the sound detector uses.*
+*The diagram picks physical pin 4 for 5V and pin 6 for ground; any 5V and any
+GND pin work as long as all boards share the same ground rail.*
+
+The full header map for this build, with the LIS3DH, display power, the UPS
+pogo pins and the ribbon connectors:
+
+![Raspberry Pi 5 GPIO header map as mounted in the case: OPS243 on physical pins 4, 6, 8, 10 and 12, display power on 2 and 14, LIS3DH on 3, 5, 17 and 20, Geekworm X1202 UPS pogo pins on 3, 5, 31 and 36. The display ribbon goes in CAM/DISP 1, the upper connector on the right edge, and the camera ribbon in CAM/DISP 0. The OPS243-A J3 header is shown from the front with pin 1 on the left and ground on the right.](../assets/pi5-gpio-header-map.svg)
 
 TX and RX are **crossed**: the radar's transmit goes to the Pi's receive, and
 the Pi's transmit goes to the radar's receive. Getting pin 6 wrong is the
