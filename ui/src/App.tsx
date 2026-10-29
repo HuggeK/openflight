@@ -47,7 +47,7 @@ import './components/panel/panel.css';
 
 function AppContent() {
   const { t } = useI18n();
-  const { shutdown } = useSocket();
+  const { shutdown, sleepScreen } = useSocket();
   const { connected, mockMode, debugMode, latestSimShots, serverClub, iwrSetup } = useSystemStore(
     useShallow((state) => ({
       connected: state.connected,
@@ -210,6 +210,17 @@ function AppContent() {
     setPickerOpen(false);
   };
 
+  const handleSleepScreen = async () => {
+    setShowShutdown(false);
+
+    try {
+      await sleepScreen();
+    } catch (error) {
+      console.error('Unable to put screen to sleep:', error);
+      window.alert('Unable to put screen to sleep.');
+    }
+  };
+
   const handleShutdown = async () => {
     setShutdownState('pending');
     try {
@@ -287,7 +298,12 @@ function AppContent() {
       {currentView === 'live' ? <SetupBanner status={iwrSetup} /> : null}
 
       {showShutdown ? (
-        <ShutdownDialog state={shutdownState} onConfirm={handleShutdown} onCancel={closeShutdown} />
+        <ShutdownDialog
+          state={shutdownState}
+          onConfirm={handleShutdown}
+          onCancel={closeShutdown}
+          onSleep={handleSleepScreen}
+        />
       ) : null}
 
       {activeReplay ? (
@@ -378,6 +394,7 @@ function AppContent() {
                 mockMode={mockMode}
                 onToggle={() => socketService.toggleDebug()}
                 onUpdateConfig={(config) => socketService.setRadarConfig(config)}
+                onReinitializeRadar={() => socketService.reinitializeRadar()}
                 triggerDiagnostics={triggerDiagnostics}
                 triggerStatus={triggerStatus}
               />

@@ -52,6 +52,15 @@ OpenFlight needs these physical inputs:
 | `--iwr6843-radar-height-m` | Antenna-center height above the floor reference |
 | `--iwr6843-ball-height-m` | Ball-center height above the same floor reference |
 
+!!! note "Saved phone calibration"
+
+    A phone app can measure and save the TI tilt instead; see
+    [Calibrate TI radar tilt with the phone](../ios-ble.md#calibrate-ti-radar-tilt-with-the-phone).
+    At startup the tilt comes from `--iwr6843-tilt-deg` if given, otherwise from
+    the saved phone calibration in
+    `~/.config/openflight/iwr6843_phone_orientation.json`, otherwise from the
+    calibration JSON.
+
 Measurement guidance:
 
 - Measure `tee-m` from the enclosure front to the centre of the ball, along the line the radar looks down. The array sits 30 mm behind the front (`ARRAY_DEPTH_M` in `iwr6843/calibration.py`) and the software adds that itself, so do not add it to the tape reading. Measure to the ball, not the golfer's feet: the golfer stands beside the ball and is a strong standing return of their own, and their feet are not where the club meets the ball.
