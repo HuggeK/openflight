@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="170" viewBox="0 0 680 170" role="img">
+<title>Raspberry Pi 5 ribbon connectors</title>
+<desc>The two MIPI ribbon connectors on the right edge of the Raspberry Pi 5 as mounted in the case, top to bottom. CAM/DISP 1, the topmost connector nearest the RJ45 port, takes the OV9281 camera ribbon (CSI), configured with dtoverlay=ov9281,cam1. CAM/DISP 0 takes the Touch Display 2 ribbon (DSI), detected automatically. Both connectors take either a camera or a display; the camera overlay must name the connector the camera is actually in.</desc>
+<style>
+  .ts { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px; fill: #5F5E5A; }
+  .th { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 500; fill: #3d3d3a; }
+  .tc { font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 12px; fill: #3d3d3a; }
+</style>
+<rect x="0" y="0" width="680" height="170" fill="#FFFFFF"/>
+<text class="th" x="340" y="22" text-anchor="middle" dominant-baseline="central">Ribbon connectors · right edge of the Pi, top to bottom</text>
+<rect x="110" y="44" width="70" height="16" rx="2" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text class="th" x="192" y="52" dominant-baseline="central">CAM/DISP 1</text>
+<text class="ts" x="282" y="52" dominant-baseline="central">topmost, nearest RJ45 → camera (CSI)</text>
+<text class="tc" x="282" y="72" dominant-baseline="central">dtoverlay=ov9281,cam1</text>
+<rect x="110" y="94" width="70" height="16" rx="2" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text class="th" x="192" y="102" dominant-baseline="central">CAM/DISP 0</text>
+<text class="ts" x="282" y="102" dominant-baseline="central">→ Touch Display 2 (DSI)</text>
+<text class="tc" x="282" y="122" dominant-baseline="central">display_auto_detect=1 (no overlay line)</text>
+<text class="ts" x="340" y="152" text-anchor="middle" dominant-baseline="central">Either connector takes a camera or a display; the camera overlay must name the camera's connector.</text>
+</svg>
