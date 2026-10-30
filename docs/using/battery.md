@@ -72,6 +72,14 @@ Warnings at 20% and 10% are dismissible and appear only while discharging.
 |---|---|
 | ![Dismissible low-battery warning at 20%](images/battery-alert-low.jpg) | ![Dismissible critical-battery warning at 10%](images/battery-alert-critical.jpg) |
 
+> [!WARNING]
+> **Do not charge lithium-ion cells below 0 °C (32 °F).** Charging below
+> freezing plates metallic lithium onto the anode, which permanently reduces
+> capacity and can make the cell unsafe. When a low-battery warning appears on a
+> cold day, bring the launch monitor indoors, or let it warm above freezing,
+> before connecting external power. See the
+> [UPS cell warnings](../build/battery.md#choose-a-board).
+
 Session logs contain `power_status` records with the provider, percentage,
 voltage, external-power state, availability, timestamp, and any read error.
 The session-start configuration also records the selected provider.
