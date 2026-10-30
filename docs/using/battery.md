@@ -3,7 +3,9 @@
 OpenFlight can display battery percentage, external-power state, and low-battery
 warnings when a supported UPS provider is selected. Monitoring is disabled by
 default and is read-only: OpenFlight does not change charging behavior or shut
-down Linux automatically.
+down Linux automatically. A separate, optional
+[low-battery shutdown](../build/battery.md#low-battery-shutdown) service can
+power the Pi off before the cells run flat.
 
 ## Supported Providers
 
@@ -107,6 +109,8 @@ provider name and reader in `src/openflight/power/factory.py`, and add focused
 reader and factory tests. Provider-specific Pi provisioning belongs under
 `scripts/battery/<provider>/`, with its operator guide under `docs/battery/`.
 
-Keep provider readers read-only. Any future controlled shutdown behavior must
-remain a separate policy that first stops OpenFlight cleanly, asks Linux to
-halt, and only then allows the UPS to remove Pi power.
+Keep provider readers read-only. Controlled shutdown stays a separate policy
+that first stops OpenFlight cleanly, asks Linux to halt, and only then allows
+the UPS to remove Pi power. `scripts/battery/battery_guard.sh` is that policy;
+it reads the standard `/sys/class/power_supply` devices, so a new provider
+whose kernel driver exposes them needs no changes there.
