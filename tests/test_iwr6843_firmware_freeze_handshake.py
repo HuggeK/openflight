@@ -14,6 +14,11 @@ gHwaFreezeRequested set; the rearm did not clear it, so the first frame
 after the rearm began a new post capture, which froze unlatched.
 
 These pin the three fixes; the race itself cannot run on the host.
+
+2026-10-29, the range session with --debug: l3dump requested a second freeze
+over the self-trigger's, restarting the post tail, and left the latch set. The
+next l3release, on a board already running again, waited out a freeze that
+never came and the host restarted the radar after 240 of 244 triggers.
 """
 
 from __future__ import annotations
@@ -49,3 +54,18 @@ def test_a_rearm_clears_any_pending_freeze_request_before_the_front_end_restarts
     clear = rearm.index("gHwaFreezeRequested = 0U;")
     assert clear < rearm.index("l3_startFrontEnd()")
     assert clear < rearm.index("l3_restartCompletedHwaFrame()")
+
+
+def test_a_dump_takes_the_self_triggers_freeze_like_the_sparse_reads():
+    """Through l3_awaitFrozenRing, which clears the latch and waits on the
+    fire's own freeze: a second request would restart its post tail."""
+    dump = _function("int32_t l3_cli_dump(int32_t argc, char *argv[])")
+    assert "l3_awaitFrozenRing()" in dump
+    assert "l3_stopCaptureAtBoundary()" not in dump
+
+
+def test_a_dump_of_a_frozen_ring_is_not_refused():
+    """A freeze clears gCaptureActive, so a dump reaching a finished tail must
+    get past the entry check too; l3_awaitFrozenRing owns that check."""
+    dump = _function("int32_t l3_cli_dump(int32_t argc, char *argv[])")
+    assert "if (!gCaptureActive)" not in dump

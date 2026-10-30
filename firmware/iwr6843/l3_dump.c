@@ -2724,6 +2724,8 @@ static uint8_t l3_dumpCancelRequested(void)
     return (value == L3_DUMP_CANCEL_BYTE) ? 1U : 0U;
 }
 
+static int32_t l3_awaitFrozenRing(void);
+
 /* CLI "l3dump": record the current circular position, retain the configured
  * post-trigger frames, stop at that completed frame boundary, stream the ring,
  * then restart from slot zero. */
@@ -2737,12 +2739,11 @@ int32_t l3_cli_dump(int32_t argc, char *argv[])
     uint32_t oldestPre;
     (void)argc; (void)argv;
 
-    if (!gCaptureActive) {
-        return -1;
-    }
-
-    /* Halt chirping only after HWA and both output EDMAs completed naturally. */
-    if (l3_stopCaptureAtBoundary() != 0) {
+    /* Halt chirping only after HWA and both output EDMAs completed naturally.
+     * A self-trigger's own freeze is taken here, clearing its latch: a second
+     * request would restart its post tail, and the stale latch would send the
+     * next l3release waiting on a freeze this restart never brings. */
+    if (l3_awaitFrozenRing() != 0) {
         return -1;
     }
 

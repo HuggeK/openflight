@@ -32,6 +32,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   which one it loaded.
 
 ### Fixed
+- **IWR6843 `l3dump` now takes a self-trigger's own freeze.** It used to
+  request a second freeze, restarting the post-impact tail, and left the
+  trigger latched. The next `l3release` then timed out on a board that was
+  already running, and the host restarted the radar after almost every
+  `--debug` capture (240 of 244 at the range on 2026-10-29). Needs a firmware
+  image built from this source.
 - **IWR6843 azimuth no longer flips at the ball's elevation.** The firmware
   read azimuth as TX1 against the plain average of the vertical TX pair, which
   sits 2 wavelengths apart: that average cancels at 14.5 degrees of elevation
