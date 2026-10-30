@@ -44,6 +44,10 @@ its print reads upside down: `ON · 15 · CTS` along the edge by the solder legs
 `ON` is on. Only S1.1 moves between flashing and
 normal use. RESET is the S2 push button on the board.*
 
+![Photo of the S1 DIP switch on a mounted IWR6843LEVM, seen from the same side as the diagram: lever numbers 6 to 1 along the top, CTS, 15 and ON along the bottom edge by the solder legs, and the S1 silkscreen beside the legs.](../assets/iwr6843-s1-boot-switch-photo.jpg)
+
+*The same switch on a mounted board, for matching the diagram to the part.*
+
 Do not press RESET yet. The flashing script opens the UART first and tells you
 when to reset the board.
 
