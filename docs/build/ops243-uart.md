@@ -61,31 +61,26 @@ on the board before counting.
 | Pin 10 | `GND` | 6 (or any GND) | GND |
 | Pin 7 | `TxD` (out) | 10 | GPIO15 / `RXD0` |
 | Pin 6 | `RxD` (in) | 8 | GPIO14 / `TXD0` |
-| Pin 3 | `HOST_INT` | — | sound detector `GATE` (unchanged) |
-| Pin 1 | alert output (`P4.0_GPIO`), optional | 12 | GPIO18 (input) |
+| Pin 3 | `HOST_INT` | 11, through the `GATE` splice | sound detector `GATE` and GPIO17 |
 
-![OPS243 UART wiring without a sound trigger: the radar, drawn with its J3 pins pointing up and the micro-USB to their left, runs from the Raspberry Pi 5 header with 5V on J3 pin 9 to Pi pin 4, ground on J3 pin 10 to Pi pin 6, a crossed UART pair on J3 pins 7 and 6 to Pi pins 10 and 8, and the alert output on J3 pin 1 to Pi pin 12 (GPIO18). The Pi is rotated so its USB ports face up and the header runs down its left edge.](../assets/ops243-uart-wiring.svg)
+![OPS243 UART wiring with the SEN-14262 sound trigger: the radar, drawn with its J3 pins pointing up and the micro-USB to their left, runs from the Raspberry Pi 5 header with 5V on J3 pin 9 to Pi pin 4, ground on J3 pin 10 to Pi pin 6, and a crossed UART pair on J3 pins 7 and 6 to Pi pins 10 and 8. The sound detector runs on 3.3V from Pi pin 1 with ground on Pi pin 9, and its GATE output is spliced to J3 pin 3 (HOST_INT) and Pi pin 11 (GPIO17). The Pi is rotated so its USB ports face up and the header runs down its left edge.](../assets/ops243-uart-wiring.svg)
 
-*The diagram picks physical pin 4 for 5V and pin 6 for ground; any 5V and any
-GND pin work as long as all boards share the same ground rail.*
+*The diagram picks physical pin 4 for 5V, pin 6 for the radar's ground and pin
+9 for the sound detector's; any 5V and any GND pin work as long as all boards
+share the same ground rail.*
 
-J3 pin 1 is the OPS243's alert output (`P4.0_GPIO`, AN-010-AE). With no speed
-or range alert set it shows when the radar samples: in rolling-buffer mode it
-rises as the radar receives a trigger and falls when the capture closes, so a
-Pi GPIO can timestamp each OPS capture. OpenFlight does not need it.
+The full header map for this build, with the sound detector, the LIS3DH,
+display power and the UPS pogo pins:
 
-The full header map for this build, with the LIS3DH, display power and the UPS
-pogo pins:
-
-![Raspberry Pi 5 GPIO header map as mounted in the case: OPS243 on physical pins 4, 6, 8, 10 and 12, with its alert output on pin 12 (GPIO18), display power on 2 and 14, LIS3DH on 3, 5, 17 and 20, Geekworm X1202 UPS pogo pins on 3, 5, 31 and 36.](../assets/pi5-gpio-header-map.svg)
+![Raspberry Pi 5 GPIO header map as mounted in the case: OPS243 on physical pins 4, 6, 8 and 10, SEN-14262 sound detector VCC on 1, GND on 9 and GATE on 11 (GPIO17), display power on 2 and 14, LIS3DH on 3, 5, 17 and 20, Geekworm X1202 UPS pogo pins on 3, 5, 31 and 36.](../assets/pi5-gpio-header-map.svg)
 
 The OPS243-A J3 header from the front:
 
-![OPS243-A J3 header viewed from the front, pin 1 on the left and ground on the right: pin 1 alert output to Pi pin 12, pin 6 RxD to Pi pin 8, pin 7 TxD to Pi pin 10, pin 9 5V to Pi pin 4, pin 10 GND to Pi pin 6; pins 2, 3, 4, 5 and 8 open.](../assets/ops243-j3-header.svg)
+![OPS243-A J3 header viewed from the front, pin 1 on the left and ground on the right: pin 3 HOST_INT to the sound detector GATE, pin 6 RxD to Pi pin 8, pin 7 TxD to Pi pin 10, pin 9 5V to Pi pin 4, pin 10 GND to Pi pin 6; pins 1, 2, 4, 5 and 8 open.](../assets/ops243-j3-header.svg)
 
 The ribbon connectors, if the build also has a camera and a Touch Display 2:
 
-![Raspberry Pi 5 ribbon connectors on the right edge, top to bottom: CAM/DISP 1, nearest the RJ45 port, takes the OV9281 camera with dtoverlay=ov9281,cam1; CAM/DISP 0 takes the Touch Display 2, detected automatically.](../assets/pi5-ribbon-connectors.svg)
+![Raspberry Pi 5 ribbon connectors on the right edge, top to bottom: CAM/DISP 0, nearer the USB ports, takes the Touch Display 2, detected automatically; CAM/DISP 1, the lower connector, takes the OV9281 camera with dtoverlay=ov9281,cam1.](../assets/pi5-ribbon-connectors.svg)
 
 TX and RX are **crossed**: the radar's transmit goes to the Pi's receive, and
 the Pi's transmit goes to the radar's receive. Getting pin 6 wrong is the

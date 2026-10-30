@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="680" height="200" viewBox="0 0 680 200" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="186" viewBox="0 0 680 186" role="img">
 <title>OPS243-A J3 header</title>
-<desc>The OPS243-A J3 header viewed from the front, pin 1 on the left and ground (pin 10) on the right. Wired pins: 1 alert output to Pi pin 12 (GPIO18), 6 RxD to Pi pin 8, 7 TxD to Pi pin 10, 9 5V to Pi pin 4, 10 GND to Pi pin 6. Pins 2, 3, 4, 5 and 8 stay open; pin 4 is /RESET (active low). With no alert threshold set, the alert output shows when the radar samples: it rises when the radar receives a trigger and falls when the capture closes.</desc>
+<desc>The OPS243-A J3 header viewed from the front, pin 1 on the left and ground (pin 10) on the right. Wired pins: 3 HOST_INT to the SEN-14262 GATE (spliced to Pi pin 11, GPIO17), 6 RxD to Pi pin 8, 7 TxD to Pi pin 10, 9 5V to Pi pin 4, 10 GND to Pi pin 6. Pins 1, 2, 4, 5 and 8 stay open; pin 4 is /RESET (active low).</desc>
 <style>
   .ts { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px; fill: #5F5E5A; }
   .th { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 500; fill: #3d3d3a; }
   .t { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; fill: #3d3d3a; }
 </style>
-<rect x="0" y="0" width="680" height="200" fill="#FFFFFF"/>
+<rect x="0" y="0" width="680" height="186" fill="#FFFFFF"/>
 <g transform="translate(0,-660)">
 <text class="th" x="340" y="684" text-anchor="middle" dominant-baseline="central">OPS243-A J3 · viewed from the front, GND rightmost</text>
 <text class="ts" x="138" y="702" text-anchor="middle" dominant-baseline="central">1</text>
-<rect x="120" y="712" width="36" height="30" rx="4" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/><text class="ts" x="138" y="727" text-anchor="middle" dominant-baseline="central" fill="#712B13" style="font-size:9.5px">ALERT</text>
-<rect x="128" y="750" width="20" height="8" rx="2" fill="#2E7D32" stroke="#73726C" stroke-width="0.5"/>
-<text class="ts" x="138" y="774" text-anchor="middle" dominant-baseline="central">Pi 12</text>
+<rect x="120" y="712" width="36" height="30" rx="4" fill="#F5F4EF" stroke="#B4B2A9" stroke-width="0.5"/><text class="ts" x="138" y="727" text-anchor="middle" dominant-baseline="central">IO</text>
 <text class="ts" x="182" y="702" text-anchor="middle" dominant-baseline="central">2</text>
 <rect x="164" y="712" width="36" height="30" rx="4" fill="#F5F4EF" stroke="#B4B2A9" stroke-width="0.5"/><text class="ts" x="182" y="727" text-anchor="middle" dominant-baseline="central">IO</text>
 <text class="ts" x="226" y="702" text-anchor="middle" dominant-baseline="central">3</text>
-<rect x="208" y="712" width="36" height="30" rx="4" fill="#F5F4EF" stroke="#B4B2A9" stroke-width="0.5"/><text class="ts" x="226" y="727" text-anchor="middle" dominant-baseline="central">INT</text>
+<rect x="208" y="712" width="36" height="30" rx="4" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/><text class="ts" x="226" y="727" text-anchor="middle" dominant-baseline="central" fill="#712B13">INT</text>
+<rect x="216" y="750" width="20" height="8" rx="2" fill="#E8C21F" stroke="#73726C" stroke-width="0.5"/>
+<text class="ts" x="226" y="774" text-anchor="middle" dominant-baseline="central">SEN GATE</text>
 <text class="ts" x="270" y="702" text-anchor="middle" dominant-baseline="central">4</text>
 <rect x="252" y="712" width="36" height="30" rx="4" fill="#F5F4EF" stroke="#B4B2A9" stroke-width="0.5"/><text class="ts" x="270" y="727" text-anchor="middle" dominant-baseline="central">/RST</text>
 <text class="ts" x="314" y="702" text-anchor="middle" dominant-baseline="central">5</text>
@@ -40,8 +40,7 @@
 <rect x="516" y="712" width="36" height="30" rx="4" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/><text class="ts" x="534" y="727" text-anchor="middle" dominant-baseline="central" fill="#712B13">GND</text>
 <rect x="524" y="750" width="20" height="8" rx="2" fill="#D32F2F" stroke="#73726C" stroke-width="0.5"/>
 <text class="ts" x="534" y="774" text-anchor="middle" dominant-baseline="central">Pi 6</text>
-<text class="ts" x="340" y="800" text-anchor="middle" dominant-baseline="central">Leave 2, 3, 4, 5 and 8 open · pin 4 is /RESET (active low)</text>
+<text class="ts" x="340" y="800" text-anchor="middle" dominant-baseline="central">Leave 1, 2, 4, 5 and 8 open · pin 4 is /RESET (active low)</text>
 </g>
-<text class="ts" x="340" y="168" text-anchor="middle" dominant-baseline="central">Pin 1 is the alert output (P4.0_GPIO). With no alert set it shows sampling:</text>
-<text class="ts" x="340" y="186" text-anchor="middle" dominant-baseline="central">it rises when the radar receives a trigger and falls when the capture closes.</text>
+<text class="ts" x="340" y="168" text-anchor="middle" dominant-baseline="central">Pin 3 (HOST_INT) takes the SEN-14262 GATE, spliced to Pi pin 11 (GPIO17).</text>
 </svg>
