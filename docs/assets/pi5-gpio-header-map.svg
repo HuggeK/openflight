@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="610" viewBox="0 0 680 610" role="img">
 <title>Raspberry Pi 5 GPIO header map</title>
-<desc>Raspberry Pi 5 40-pin header as mounted in the case, USB ports at the back (top) and pin 1 at the front (bottom), 5V column on the outer edge. OPS243 on physical pins 4, 6, 8 and 10; SEN-14262 sound detector VCC on 1, GND on 9 and GATE on 11 (GPIO17, spliced to OPS243 J3 pin 3); display power on 2 and 14; LIS3DH on 3, 5, 17 and 20; the Geekworm X1202 UPS pogo pins on 3, 5, 31 and 36. The ribbon connectors and the OPS243 J3 header have their own diagrams.</desc>
+<desc>Raspberry Pi 5 40-pin header as mounted in the case, USB ports at the back (top) and pin 1 at the front (bottom), 5V column on the outer edge. OPS243 on physical pins 4, 6, 8 and 10; SEN-14262 sound detector VCC on 1, GND on 9 and GATE on 11 (GPIO17, spliced to OPS243 J3 pin 3); display power on 2 and 14; LIS3DH on 3, 5, 17 and 20; the Geekworm X1202 UPS pogo pins on 3, 5, 31 and 36. The ribbon connectors are labelled in the OPS243 wiring diagram; the OPS243 J3 header has its own diagram.</desc>
 <style>
   .ts { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px; fill: #5F5E5A; }
   .th { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 500; fill: #3d3d3a; }
