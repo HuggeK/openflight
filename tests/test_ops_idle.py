@@ -191,3 +191,95 @@ def test_installer_unit_runs_before_openflight(port):
     assert "Before=openflight.service" in unit
     assert f"{PROJECT_ROOT.as_posix()}/scripts/setup/ops_idle.py" in unit
     assert ("--port /dev/ttyAMA0" in unit) is bool(port)
+
+
+SETUP_SCRIPT = PROJECT_ROOT / "scripts" / "setup" / "setup.sh"
+IDLE_STEP_MARKER = "# --- Idle the OPS243-A at boot ---"
+
+
+def _setup_idle_step() -> str:
+    """The idle step of setup.sh, from its marker up to the next step."""
+    lines = SETUP_SCRIPT.read_text(encoding="utf-8").splitlines()
+    start = lines.index(f"    {IDLE_STEP_MARKER}")
+    end = next(
+        i for i in range(start + 1, len(lines)) if lines[i].strip().startswith("# ---")
+    )
+    return "\n".join(lines[start:end])
+
+
+def _run_setup_idle_step(tmp_path, *, answer_yes, port_input="", installer_exit=0):
+    """Run setup.sh's idle step against a stub installer that records its argv."""
+    record = tmp_path / "installer-args"
+    installer = tmp_path / "install_ops_idle_service.sh"
+    installer.write_text(
+        f'#!/usr/bin/env bash\nprintf "%s\n" "$#" "$@" > "{record.as_posix()}"\n'
+        f"exit {installer_exit}\n",
+        encoding="utf-8",
+    )
+    installer.chmod(0o755)
+    script = "\n".join(
+        [
+            "set -e",
+            f'SCRIPT_DIR="{tmp_path.as_posix()}"',
+            "BLUE=''; NC=''",
+            "log() { echo \"LOG $1\"; }",
+            "warn() { echo \"WARN $1\"; }",
+            "info() { echo \"INFO $1\"; }",
+            f"confirm() {{ return {0 if answer_yes else 1}; }}",
+            _setup_idle_step(),
+            "echo SETUP_CONTINUED",
+        ]
+    )
+    result = subprocess.run(
+        ["bash", "-c", script],
+        input=f"{port_input}\n",
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    args = record.read_text(encoding="utf-8").splitlines() if record.exists() else None
+    return result.stdout, args
+
+
+def test_main_setup_offers_the_idle_service():
+    setup = SETUP_SCRIPT.read_text(encoding="utf-8")
+
+    assert 'confirm "Idle the OPS243-A radar at boot until OpenFlight starts?' in setup
+    assert '"$SCRIPT_DIR/install_ops_idle_service.sh"' in setup
+
+
+def test_setup_idle_step_passes_the_entered_port(tmp_path):
+    stdout, args = _run_setup_idle_step(tmp_path, answer_yes=True, port_input="/dev/ttyAMA0")
+
+    assert args == ["2", "--port", "/dev/ttyAMA0"]
+    assert "boot idle service installed" in stdout
+    assert "SETUP_CONTINUED" in stdout
+
+
+@pytest.mark.parametrize("port_input", ["", "   ", "\r"])
+def test_setup_idle_step_defaults_to_usb_auto_detect(tmp_path, port_input):
+    _, args = _run_setup_idle_step(tmp_path, answer_yes=True, port_input=port_input)
+
+    assert args == ["0"]
+
+
+def test_setup_idle_step_strips_whitespace_around_the_port(tmp_path):
+    _, args = _run_setup_idle_step(tmp_path, answer_yes=True, port_input=" /dev/ttyAMA0\r")
+
+    assert args == ["2", "--port", "/dev/ttyAMA0"]
+
+
+def test_setup_idle_step_failure_warns_and_setup_continues(tmp_path):
+    stdout, args = _run_setup_idle_step(tmp_path, answer_yes=True, installer_exit=1)
+
+    assert args == ["0"]
+    assert "WARN The idle service did not install" in stdout
+    assert "SETUP_CONTINUED" in stdout
+
+
+def test_setup_idle_step_declined_installs_nothing(tmp_path):
+    stdout, args = _run_setup_idle_step(tmp_path, answer_yes=False)
+
+    assert args is None
+    assert "install_ops_idle_service.sh [--port PORT]" in stdout
+    assert "SETUP_CONTINUED" in stdout

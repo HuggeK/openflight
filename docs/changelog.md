@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `PI` when it shuts down, so the radar stops sampling and powers its RF down
   (about 0.6 W instead of 1.5 W) instead of running until power is removed.
   `scripts/setup/install_ops_idle_service.sh` adds an optional boot service
-  that idles it from power-up until OpenFlight first starts. See
+  that idles it from power-up until OpenFlight first starts, and
+  `scripts/setup/setup.sh` offers to install it. See
   [Idle While OpenFlight Is Not Running](setup/rolling-buffer.md#idle-while-openflight-is-not-running).
 - **Optional low-battery shutdown for UPS builds.**
   `scripts/battery/install_battery_guard.sh` installs a systemd service that,

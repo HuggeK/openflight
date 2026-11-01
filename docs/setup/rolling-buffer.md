@@ -64,7 +64,8 @@ in rolling-buffer mode and the next start wakes it with the usual
 `PI` → `GC` → `PA` sequence.
 
 To idle it from boot until OpenFlight first starts, which matters most on
-battery, install the boot service with your radar's port:
+battery, answer yes to the idle prompt in `scripts/setup/setup.sh`, or install
+the boot service yourself with your radar's port:
 
 ```bash
 scripts/setup/install_ops_idle_service.sh --port /dev/ttyAMA0   # GPIO UART
