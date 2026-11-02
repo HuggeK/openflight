@@ -99,6 +99,11 @@ repository root:
 uv sync --extra camera
 ```
 
+This reuses the `.venv` that `scripts/setup/setup.sh` builds on the system
+Python, which is the only interpreter Picamera2 can load in. If
+`.venv/bin/python -c "import picamera2"` fails, rebuild the environment as
+described in [Python Environment](../setup/raspberry-pi.md#python-environment).
+
 OpenCV is intentionally not installed for radar-only OpenFlight systems.
 
 Reboot after enabling or changing camera hardware:
@@ -383,8 +388,10 @@ uv run --no-project --python /usr/bin/python3 python <script>
 ```
 
 For OpenFlight itself, first confirm `python3-picamera2` is installed through
-`apt`, then run `uv sync --extra camera`. The camera runtime exposes Raspberry
-Pi OS's package directory to the OpenFlight environment automatically.
+`apt`, then run `uv sync --extra camera`. If `import picamera2` still fails
+with `No module named 'libcamera._libcamera'`, `.venv` was built on a
+different Python than the system one; rebuild it as described in
+[Python Environment](../setup/raspberry-pi.md#python-environment).
 
 ### Requested high-speed mode is missing
 

@@ -5,12 +5,16 @@ import re
 import shlex
 import shutil
 import signal
-import stat
 import subprocess
 import time
 from pathlib import Path
 
 import pytest
+
+from tests.shell_harness import (
+    bash_path as _bash_path,
+    write_executable as _write_executable,
+)
 
 pytestmark = pytest.mark.skipif(
     shutil.which("bash") is None,
@@ -354,28 +358,6 @@ def test_ui_build_check_does_not_block_startup_on_missing_electron():
     assert 'source "$SCRIPT_DIR/ensure-kiosk-ui.sh"' in script
     assert "ensure_kiosk_ui" in script
     assert 'if [ ! -d "ui/dist" ] || [ ! -x "ui/node_modules/.bin/electron" ]; then' not in script
-
-
-def _bash_path(path: Path) -> str:
-    resolved = str(path.resolve())
-    if os.name != "nt":
-        return resolved
-    converted = subprocess.run(
-        ["bash", "-lc", f"wslpath -u {shlex.quote(resolved.replace(chr(92), '/'))}"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    mapped = converted.stdout.strip()
-    if converted.returncode == 0 and mapped:
-        return mapped
-    posix = Path(resolved).as_posix()
-    return f"/{posix[0].lower()}{posix[2:]}"
-
-
-def _write_executable(path: Path, contents: str) -> None:
-    path.write_text(contents, encoding="utf-8", newline="\n")
-    path.chmod(path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 
 def _run_ensure_kiosk_ui(

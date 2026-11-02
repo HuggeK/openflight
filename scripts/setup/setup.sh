@@ -117,21 +117,19 @@ elif ! command -v ffmpeg &> /dev/null; then
     warn "FFmpeg not found. It is required only for on-demand camera shot replay."
 fi
 
-# Check for Python 3.9+
+# Check for Python 3.10+ (pyproject.toml requires-python)
 log "Checking Python version..."
 if command -v python3 &> /dev/null; then
     PYTHON_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
-    PYTHON_MAJOR=$(echo "$PYTHON_VERSION" | cut -d. -f1)
-    PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
 
-    if [ "$PYTHON_MAJOR" -ge 3 ] && [ "$PYTHON_MINOR" -ge 9 ]; then
-        log "Python $PYTHON_VERSION found ✓"
+    if python3 -c 'import sys; sys.exit(sys.version_info < (3, 10))'; then
+        log "System Python $PYTHON_VERSION found ✓"
     else
-        error "Python 3.9+ required, found $PYTHON_VERSION"
+        error "Python 3.10+ required, found $PYTHON_VERSION"
         exit 1
     fi
 else
-    error "Python 3 not found. Please install Python 3.9+"
+    error "Python 3 not found. Please install Python 3.10+"
     exit 1
 fi
 
@@ -161,8 +159,20 @@ if ! command -v uv &> /dev/null; then
     export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
 fi
 
-# Create virtual environment
-if [ ! -d .venv ]; then
+# Create virtual environment. On a Pi it must be built on the system Python
+# with system site-packages so Raspberry Pi OS's Picamera2/libcamera stay
+# importable; later `uv sync` / `uv run` reuse it (see system-python-venv.sh).
+if [[ "$PLATFORM" == "pi" ]]; then
+    # shellcheck source=system-python-venv.sh
+    source "$SCRIPT_DIR/system-python-venv.sh"
+    if openflight_venv_matches_system_python .venv /usr/bin/python3; then
+        log "Virtual environment already uses the system Python ✓"
+    else
+        log "Creating Python virtual environment on the system Python..."
+        openflight_ensure_system_python_venv .venv /usr/bin/python3
+        log "Created venv"
+    fi
+elif [ ! -d .venv ]; then
     log "Creating Python virtual environment..."
     python3 -m venv .venv
     log "Created venv"
@@ -170,7 +180,7 @@ fi
 
 # Activate venv
 source .venv/bin/activate
-log "Activated virtual environment"
+log "Virtual environment uses Python $(python -c 'import platform; print(platform.python_version())') ✓"
 
 # Install Python dependencies
 log "Installing Python dependencies..."

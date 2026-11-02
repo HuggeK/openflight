@@ -152,12 +152,8 @@ export OPENFLIGHT_UV_RUN_ARGS=--no-sync
 ```
 
 Run `uv sync` again after pulling a dependency change. Camera installations
-that rely on Raspberry Pi OS's system Picamera2 package may also require the
-following local setting:
-
-```bash
-export UV_PYTHON=/usr/bin/python3
-```
+need no extra setting: `uv` reuses the system-Python `.venv` described in
+[Python Environment](raspberry-pi.md#python-environment).
 
 Do not add `GPIOZERO_PIN_FACTORY=lgpio`. OpenFlight selects the Raspberry Pi 5
 GPIO chip explicitly; the environment override enters gpiozero's broken

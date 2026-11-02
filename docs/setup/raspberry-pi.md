@@ -136,6 +136,26 @@ See **[Simulator Connectors](../using/simulator/index.md)** for the full guide.
 You don't need this section unless something went wrong or you prefer to do
 things by hand.
 
+### Python Environment
+
+Raspberry Pi OS installs Picamera2 and libcamera's Python bindings (`apt`
+package `python3-picamera2`) for the system Python only — 3.13 on Trixie, 3.11
+on Bookworm — and they cannot load in any other interpreter. On a Pi,
+`setup.sh` therefore builds `.venv` on `/usr/bin/python3` with system
+site-packages visible, and rebuilds it if it was made any other way. The repo
+pins no Python version, so every later `uv sync` or `uv run` reuses that
+environment instead of replacing it.
+
+To rebuild it by hand (for example after a Raspberry Pi OS upgrade changes the
+system Python), from the repository root:
+
+```bash
+uv venv --clear --system-site-packages --python /usr/bin/python3
+uv sync
+```
+
+Check it with `.venv/bin/python -c "import picamera2"`.
+
 ### IWR6843 Angle Radar
 
 The setup script does not configure the IWR6843 — it needs custom firmware

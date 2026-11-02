@@ -54,10 +54,6 @@ openflight_args=(
 
 # Optional startup optimization after dependencies have already been synced:
 # export OPENFLIGHT_UV_RUN_ARGS=--no-sync
-#
-# Camera capture uses Raspberry Pi OS's system Picamera2 package. A local
-# camera profile may also need:
-# export UV_PYTHON=/usr/bin/python3
 
 log_file="$log_dir/kiosk_$(date +%Y%m%d_%H%M%S).log"
 scripts/start-kiosk.sh "${openflight_args[@]}" 2>&1 | tee -a "$log_file"

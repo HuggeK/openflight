@@ -46,6 +46,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [Electron Kiosk Shell](electron-kiosk-shell.md#browser-local-state-breaking-on-first-electron-launch).
 
 ### Fixed
+- **Plain `uv` commands no longer break the camera on a Raspberry Pi.** The
+  repo pinned Python 3.11 in `.python-version`, so any `uv sync` or `uv run`
+  rebuilt `.venv` away from the system Python that Picamera2 and libcamera
+  are built for (3.13 on Trixie), and `--camera-capture` failed with
+  `No module named 'libcamera._libcamera'`. The pin is removed; on a Pi,
+  `setup.sh` now builds `.venv` on `/usr/bin/python3` with system
+  site-packages, repairs a venv made any other way, and reports the venv's
+  Python version. CI now also tests Python 3.13. See
+  [Python Environment](setup/raspberry-pi.md#python-environment).
 - **Simulator output tags estimated launch angles as estimated.** When the
   server fills in a launch angle before the sim fan-out, the resolver tagged
   it, and the carry built on it, as measured. It now reads the angle's source,
